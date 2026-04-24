@@ -1,6 +1,12 @@
-这里应该放置图片文件：
-- phone.jpg - 手机图片
-- laptop.jpg - 笔记本图片
-- earphone.jpg - 耳机图片
-- default-avatar.png - 默认头像
-- empty-cart.png - 空购物车图片
+This directory contains image assets for the mini program.
+
+Required images:
+- tab-home.png / tab-home-active.png (tab bar icons)
+- tab-category.png / tab-category-active.png (tab bar icons)
+- tab-cart.png / tab-cart-active.png (tab bar icons)
+- tab-profile.png / tab-profile-active.png (tab bar icons)
+- default-avatar.png (user avatar placeholder)
+- empty-cart.png (empty cart state)
+
+Note: Tab bar icons have been generated as colored placeholders.
+Replace with proper icon designs for production.

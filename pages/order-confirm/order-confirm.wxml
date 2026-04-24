@@ -1,0 +1,63 @@
+<view class="container">
+  <view class="address-section" bindtap="selectAddress">
+    <block wx:if="{{selectedAddress}}">
+      <view class="address-info">
+        <view class="address-top">
+          <text class="address-name">{{selectedAddress.name}}</text>
+          <text class="address-phone">{{selectedAddress.phone}}</text>
+        </view>
+        <text class="address-detail">{{selectedAddress.province}}{{selectedAddress.city}}{{selectedAddress.district}}{{selectedAddress.detail}}</text>
+      </view>
+    </block>
+    <view class="no-address" wx:else>
+      <text>+ 选择收货地址</text>
+    </view>
+    <text class="arrow">></text>
+  </view>
+
+  <view class="goods-section">
+    <view class="section-title">商品清单</view>
+    <block wx:for="{{items}}" wx:key="goods_id">
+      <view class="goods-item">
+        <image class="goods-image" src="{{item.localImage || item.image}}" mode="aspectFill"></image>
+        <view class="goods-info">
+          <text class="goods-name">{{item.title}}</text>
+          <view class="goods-bottom">
+            <text class="goods-price">¥{{item.price}}</text>
+            <text class="goods-quantity">x{{item.quantity}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="remark-section">
+    <text class="remark-label">订单备注</text>
+    <input class="remark-input" placeholder="选填，给卖家留言" value="{{remark}}"
+           bindinput="onRemarkInput" />
+  </view>
+
+  <view class="price-section">
+    <view class="price-row">
+      <text>商品金额</text>
+      <text>¥{{totalAmount}}</text>
+    </view>
+    <view class="price-row">
+      <text>运费</text>
+      <text wx:if="{{freight > 0}}">¥{{freight}}</text>
+      <text wx:else class="free">免运费</text>
+    </view>
+    <view class="price-row total">
+      <text>合计</text>
+      <text class="total-price">¥{{payAmount}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="bottom-info">
+      <text class="bottom-label">实付：</text>
+      <text class="bottom-price">¥{{payAmount}}</text>
+    </view>
+    <button class="btn-submit" bindtap="submitOrder">提交订单</button>
+  </view>
+</view>

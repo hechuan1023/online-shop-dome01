@@ -1,34 +1,49 @@
 <view class="container">
-  <view class="header">
-    <text class="title">购物小程序</text>
-    <text class="subtitle">发现好物，享受购物乐趣</text>
+  <view class="search-bar" bindtap="goToSearch">
+    <text class="search-placeholder">搜索商品...</text>
   </view>
 
-  <view class="nav-section">
-    <view class="nav-item" bindtap="goToProducts">
-      <text class="nav-icon">🛍️</text>
-      <text class="nav-text">商品列表</text>
-    </view>
-    <view class="nav-item" bindtap="goToCart">
-      <text class="nav-icon">🛒</text>
-      <text class="nav-text">购物车</text>
-    </view>
-    <view class="nav-item" bindtap="goToProfile">
-      <text class="nav-icon">👤</text>
-      <text class="nav-text">个人中心</text>
-    </view>
+  <swiper class="banner-swiper" indicator-dots autoplay circular wx:if="{{banners.length > 0}}">
+    <block wx:for="{{banners}}" wx:key="id">
+      <swiper-item>
+        <image class="banner-image" src="{{item.localImage || item.image}}" mode="aspectFill"></image>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <view class="category-nav">
+    <block wx:for="{{categories}}" wx:key="id">
+      <view class="category-item" bindtap="goToCategory" data-tag="{{item.tag}}">
+        <image class="category-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </block>
   </view>
 
-  <view class="feature-section">
+  <view class="hot-keywords" wx:if="{{hotKeywords.length > 0}}">
+    <scroll-view scroll-x class="keyword-scroll">
+      <block wx:for="{{hotKeywords}}" wx:key="id">
+        <text class="keyword-tag" bindtap="goToSearch">{{item.keyword}}</text>
+      </block>
+    </scroll-view>
+  </view>
+
+  <view class="section">
     <view class="section-title">热门推荐</view>
     <view class="product-grid">
-      <block wx:for="{{hotProducts}}" wx:key="id">
+      <block wx:for="{{products}}" wx:key="id">
         <view class="product-card" bindtap="goToProductDetail" data-id="{{item.id}}">
-          <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
-          <text class="product-name">{{item.name}}</text>
-          <text class="product-price">¥{{item.price}}</text>
+          <image class="product-image" src="{{item.localImage || item.image}}" mode="aspectFill"></image>
+          <text class="product-name">{{item.title}}</text>
+          <view class="product-bottom">
+            <text class="product-price">¥{{item.price}}</text>
+            <view class="btn-add-cart" catchtap="addToCart" data-item="{{item}}">+</view>
+          </view>
         </view>
       </block>
     </view>
   </view>
+
+  <view class="loading" wx:if="{{loading}}"></view>
+  <view class="no-more" wx:if="{{!hasMore && products.length > 0}}">没有更多了</view>
 </view>

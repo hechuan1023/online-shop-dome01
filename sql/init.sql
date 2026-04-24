@@ -1,0 +1,116 @@
+-- ============ 基础业务表 ============
+
+-- 用户表
+CREATE TABLE IF NOT EXISTS user (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  openid VARCHAR(100),
+  session_key VARCHAR(100),
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 轮播图表
+CREATE TABLE IF NOT EXISTS banner (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  image VARCHAR(500),
+  link VARCHAR(500),
+  sort_order INT DEFAULT 0,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品表
+CREATE TABLE IF NOT EXISTS goods (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255),
+  price DECIMAL(10,2),
+  image VARCHAR(500),
+  description TEXT,
+  stock INT DEFAULT 100,
+  sales INT DEFAULT 0,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品详情表
+CREATE TABLE IF NOT EXISTS goodsdetails (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255),
+  price DECIMAL(10,2),
+  image VARCHAR(500),
+  description TEXT,
+  stock INT DEFAULT 100,
+  sales INT DEFAULT 0,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 搜索关键词表
+CREATE TABLE IF NOT EXISTS keywords (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  keyword VARCHAR(100),
+  sort_order INT DEFAULT 0,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 购物车表
+CREATE TABLE IF NOT EXISTS cart (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255),
+  image VARCHAR(500),
+  price DECIMAL(10,2),
+  currentID INT,
+  quantity INT DEFAULT 1,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品分类表
+CREATE TABLE IF NOT EXISTS category (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  cate VARCHAR(100),
+  goods_id INT,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============ 订单表 ============
+
+-- 订单主表
+CREATE TABLE IF NOT EXISTS orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  order_no VARCHAR(32) UNIQUE NOT NULL,
+  user_id INT,
+  address_id INT,
+  total_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+  pay_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+  freight DECIMAL(10,2) NOT NULL DEFAULT 0,
+  status TINYINT NOT NULL DEFAULT 0 COMMENT '0待付款 1待发货 2待收货 3已完成 4已取消',
+  remark VARCHAR(255),
+  pay_time DATETIME,
+  deliver_time DATETIME,
+  receive_time DATETIME,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 订单商品表
+CREATE TABLE IF NOT EXISTS order_items (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  order_id INT NOT NULL,
+  goods_id INT NOT NULL,
+  title VARCHAR(255),
+  image VARCHAR(500),
+  price DECIMAL(10,2) NOT NULL,
+  quantity INT NOT NULL DEFAULT 1,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 收货地址表
+CREATE TABLE IF NOT EXISTS address (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT,
+  name VARCHAR(50) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  province VARCHAR(50),
+  city VARCHAR(50),
+  district VARCHAR(50),
+  detail VARCHAR(255) NOT NULL,
+  is_default TINYINT NOT NULL DEFAULT 0,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

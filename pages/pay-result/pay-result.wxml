@@ -1,0 +1,43 @@
+<view class="container">
+  <view class="result-section" wx:if="{{status === 'success'}}">
+    <text class="result-icon">✅</text>
+    <text class="result-title">支付成功</text>
+    <text class="result-desc" wx:if="{{order}}">实付金额：¥{{order.pay_amount}}</text>
+  </view>
+
+  <view class="result-section" wx:elif="{{status === 'unpaid'}}">
+    <text class="result-icon">⏳</text>
+    <text class="result-title">待支付</text>
+    <text class="result-desc" wx:if="{{order}}">需支付：¥{{order.pay_amount}}</text>
+    <button class="btn-pay" bindtap="payNow">立即支付</button>
+  </view>
+
+  <view class="result-section" wx:else>
+    <text class="result-icon">❌</text>
+    <text class="result-title">支付失败</text>
+    <text class="result-desc">请重新尝试支付</text>
+  </view>
+
+  <view class="order-info" wx:if="{{order}}">
+    <view class="info-row">
+      <text class="info-label">订单编号</text>
+      <text class="info-value">{{order.order_no}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">下单时间</text>
+      <text class="info-value">{{order.create_time}}</text>
+    </view>
+    <block wx:if="{{order.address}}">
+      <view class="info-row">
+        <text class="info-label">收货人</text>
+        <text class="info-value">{{order.address.name}} {{order.address.phone}}</text>
+      </view>
+    </block>
+  </view>
+
+  <view class="action-buttons">
+    <button class="btn-order" bindtap="goToOrder">查看订单</button>
+    <button class="btn-orders" bindtap="goToOrders">全部订单</button>
+    <button class="btn-home" bindtap="goToHome">返回首页</button>
+  </view>
+</view>

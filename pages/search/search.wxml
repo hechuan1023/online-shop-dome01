@@ -1,0 +1,53 @@
+<view class="container">
+  <view class="search-header">
+    <view class="search-input-wrap">
+      <input class="search-input" placeholder="搜索商品" value="{{keyword}}"
+             bindinput="onInput" bindconfirm="onSearch" focus="true" />
+      <text class="clear-btn" wx:if="{{keyword}}" bindtap="onClear">×</text>
+    </view>
+    <text class="search-btn" bindtap="onSearch">搜索</text>
+  </view>
+
+  <view class="search-body" wx:if="{{!searched}}">
+    <view class="section" wx:if="{{searchHistory.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">搜索历史</text>
+        <text class="section-action" bindtap="clearHistory">清空</text>
+      </view>
+      <view class="tag-list">
+        <block wx:for="{{searchHistory}}" wx:key="*this">
+          <text class="tag" bindtap="onHistoryTap" data-keyword="{{item}}">{{item}}</text>
+        </block>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{hotKeywords.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">热门搜索</text>
+      </view>
+      <view class="tag-list">
+        <block wx:for="{{hotKeywords}}" wx:key="id">
+          <text class="tag hot" bindtap="onKeywordTap" data-keyword="{{item.keyword}}">{{item.keyword}}</text>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="search-results" wx:if="{{searched}}">
+    <view class="loading" wx:if="{{loading}}"></view>
+    <block wx:if="{{products.length > 0}}">
+      <block wx:for="{{products}}" wx:key="id">
+        <view class="product-item" bindtap="goToProductDetail" data-id="{{item.id}}">
+          <image class="product-image" src="{{item.localImage || item.image}}" mode="aspectFill"></image>
+          <view class="product-info">
+            <text class="product-name">{{item.title}}</text>
+            <text class="product-price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </block>
+    </block>
+    <view class="empty-tip" wx:if="{{!loading && products.length === 0}}">
+      <text>未找到相关商品</text>
+    </view>
+  </view>
+</view>

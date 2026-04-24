@@ -43,35 +43,19 @@ Page({
   },
 
   goToOrders: function() {
-    wx.showToast({
-      title: '跳转到订单页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到订单页面
+    wx.navigateTo({ url: '/pages/order/order' });
   },
 
   goToAddress: function() {
-    wx.showToast({
-      title: '跳转到地址管理',
-      icon: 'none'
-    });
-    // 这里应该跳转到地址管理页面
+    wx.navigateTo({ url: '/pages/address/address' });
   },
 
   goToFavorites: function() {
-    wx.showToast({
-      title: '跳转到收藏页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到收藏页面
+    wx.showToast({ title: '收藏功能开发中', icon: 'none' });
   },
 
   goToCoupons: function() {
-    wx.showToast({
-      title: '跳转到优惠券页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到优惠券页面
+    wx.showToast({ title: '优惠券功能开发中', icon: 'none' });
   },
 
   goToSettings: function() {

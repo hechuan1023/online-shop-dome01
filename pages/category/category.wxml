@@ -1,0 +1,37 @@
+<view class="container">
+  <view class="search-bar" bindtap="goToSearch">
+    <text class="search-placeholder">搜索商品...</text>
+  </view>
+
+  <view class="category-body">
+    <view class="category-sidebar">
+      <block wx:for="{{categories}}" wx:key="id">
+        <view class="sidebar-item {{currentCategory === item.tag ? 'active' : ''}}"
+              bindtap="switchCategory" data-tag="{{item.tag}}">
+          <image class="sidebar-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <text class="sidebar-text">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="category-content">
+      <view class="loading" wx:if="{{loading}}"></view>
+      <block wx:if="{{products.length > 0}}">
+        <view class="product-list">
+          <block wx:for="{{products}}" wx:key="id">
+            <view class="product-item" bindtap="goToProductDetail" data-id="{{item.id}}">
+              <image class="product-image" src="{{item.localImage || item.image}}" mode="aspectFill"></image>
+              <view class="product-info">
+                <text class="product-name">{{item.title}}</text>
+                <text class="product-price">¥{{item.price}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </block>
+      <view class="empty-tip" wx:if="{{!loading && products.length === 0}}">
+        <text>暂无商品</text>
+      </view>
+    </view>
+  </view>
+</view>

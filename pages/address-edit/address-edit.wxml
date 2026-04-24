@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="form">
+    <view class="form-item">
+      <text class="label">收货人</text>
+      <input class="input" placeholder="请输入收货人姓名" value="{{name}}"
+             bindinput="onInput" data-field="name" />
+    </view>
+    <view class="form-item">
+      <text class="label">手机号</text>
+      <input class="input" placeholder="请输入手机号" value="{{phone}}" type="number" maxlength="11"
+             bindinput="onInput" data-field="phone" />
+    </view>
+    <view class="form-item">
+      <text class="label">所在地区</text>
+      <picker mode="region" value="{{region}}" bindchange="onRegionChange">
+        <text class="region-text" wx:if="{{province}}">{{province}} {{city}} {{district}}</text>
+        <text class="region-placeholder" wx:else>请选择地区</text>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="label">详细地址</text>
+      <input class="input" placeholder="请输入详细地址" value="{{detail}}"
+             bindinput="onInput" data-field="detail" />
+    </view>
+    <view class="form-item switch-item">
+      <text class="label">设为默认地址</text>
+      <switch checked="{{is_default}}" bindchange="toggleDefault" color="#e64340" />
+    </view>
+  </view>
+
+  <button class="btn-save" bindtap="saveAddress">保存</button>
+</view>

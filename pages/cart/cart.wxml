@@ -3,9 +3,9 @@
     <block wx:for="{{cartItems}}" wx:key="id">
       <view class="cart-item">
         <checkbox class="item-checkbox" checked="{{item.checked}}" data-id="{{item.id}}" bindtap="toggleCheck"></checkbox>
-        <image class="item-image" src="{{item.image}}" mode="aspectFill"></image>
+        <image class="item-image" src="{{item.localImage || item.image}}" mode="aspectFill"></image>
         <view class="item-info">
-          <text class="item-name">{{item.name}}</text>
+          <text class="item-name">{{item.title}}</text>
           <text class="item-price">¥{{item.price}}</text>
           <view class="quantity-control">
             <button class="btn-quantity" data-id="{{item.id}}" data-action="decrease" bindtap="changeQuantity">-</button>
@@ -18,11 +18,13 @@
     </block>
   </view>
 
-  <view class="empty-cart" wx:else>
-    <image class="empty-image" src="/images/empty-cart.png" mode="aspectFit"></image>
+  <view class="empty-cart" wx:if="{{!loading && cartItems.length === 0}}">
+    <text class="empty-icon">🛒</text>
     <text class="empty-text">购物车空空如也</text>
     <button class="btn-go-shopping" bindtap="goShopping">去逛逛</button>
   </view>
+
+  <view class="loading" wx:if="{{loading}}"></view>
 
   <view class="cart-footer" wx:if="{{cartItems.length > 0}}">
     <view class="select-all">

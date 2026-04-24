@@ -61,6 +61,7 @@
   border: 1rpx solid #ddd;
   background-color: #fff;
   font-size: 24rpx;
+  padding: 0;
 }
 
 .quantity {
@@ -86,9 +87,8 @@
   padding-top: 200rpx;
 }
 
-.empty-image {
-  width: 200rpx;
-  height: 200rpx;
+.empty-icon {
+  font-size: 120rpx;
   margin-bottom: 30rpx;
 }
 
