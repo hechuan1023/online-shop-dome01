@@ -1,4 +1,5 @@
 const request = require('../../util/request');
+const app = getApp();
 
 Page({
   data: {
@@ -65,6 +66,7 @@ Page({
   },
 
   submitOrder: function() {
+    if (!app.requireLogin()) return;
     if (!this.data.selectedAddress) {
       wx.showToast({ title: '请选择收货地址', icon: 'none' });
       return;

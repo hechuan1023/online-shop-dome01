@@ -47,6 +47,23 @@
   font-size: 28rpx;
 }
 
+.btn-logout {
+  background-color: #999;
+  color: #fff;
+  border: none;
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 28rpx;
+}
+
+.btn-logout::after {
+  border: none;
+}
+
+.login-hint {
+  color: #e64340;
+}
+
 .stats-section {
   background-color: #fff;
   display: flex;

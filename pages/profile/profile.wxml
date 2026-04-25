@@ -1,11 +1,12 @@
 <view class="container">
-  <view class="user-header">
+  <view class="user-header" bindtap="{{isLoggedIn ? '' : 'goToLogin'}}">
     <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
     <view class="user-info">
       <text class="username">{{userInfo.nickName}}</text>
-      <text class="user-level">{{userInfo.level}}</text>
+      <text class="user-level" wx:if="{{isLoggedIn}}">VIP会员</text>
+      <text class="user-level login-hint" wx:else>点击登录</text>
     </view>
-    <button class="btn-edit" bindtap="editProfile">编辑</button>
+    <button class="btn-logout" wx:if="{{isLoggedIn}}" catchtap="logout">退出</button>
   </view>
 
   <view class="stats-section">

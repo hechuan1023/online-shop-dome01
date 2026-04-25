@@ -1,4 +1,5 @@
 const request = require('../../util/request');
+const app = getApp();
 
 Page({
   data: {
@@ -14,6 +15,7 @@ Page({
   },
 
   onShow: function() {
+    if (!app.requireLogin()) return;
     this.loadAddressList();
   },
 

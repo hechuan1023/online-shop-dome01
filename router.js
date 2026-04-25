@@ -256,19 +256,19 @@ router.post("/login", (req, res) => {
         const token = `mock_token_for_${data.openid}_${Date.now()}`;
 
         console.log("将openid存入user表");
-        const sql = "insert into user values (null,?,?)"
+        const sql = "insert into user (openid, session_key) values (?,?) on duplicate key update session_key = values(session_key)"
         if(data.openid && data.session_key){
             SQLConnect(sql, [data.openid,data.session_key], (result) => {
                 if (result.affectedRows > 0) {
                     res.send({
                         status: 200,
                         data: {openid:data.openid,token:token},
-                        msg: "添加成功"
+                        msg: "登录成功"
                     })
                 } else {
                     res.status(500).send({
                         status: 500,
-                        msg: "添加失败"
+                        msg: "登录失败"
                     });
                 }
             })

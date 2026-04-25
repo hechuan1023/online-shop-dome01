@@ -137,6 +137,7 @@ Page({
   },
 
   checkout: function() {
+    if (!app.requireLogin()) return;
     const checkedItems = this.data.cartItems.filter(item => item.checked);
     if (checkedItems.length === 0) {
       wx.showToast({ title: '请选择商品', icon: 'none' });

@@ -4,7 +4,8 @@ App({
     serverUrl: 'http://localhost:3001',
     userInfo: null,
     openid: null,
-    token: null
+    token: null,
+    isLoggedIn: false
   },
 
   onLaunch: function() {
@@ -14,10 +15,21 @@ App({
   checkLogin: function() {
     const token = wx.getStorageSync('token');
     const openid = wx.getStorageSync('openid');
-    if (token && openid) {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (token && openid && userInfo) {
       this.globalData.token = token;
       this.globalData.openid = openid;
+      this.globalData.userInfo = userInfo;
+      this.globalData.isLoggedIn = true;
     }
+  },
+
+  requireLogin: function() {
+    if (!this.globalData.isLoggedIn) {
+      wx.navigateTo({ url: '/pages/login/login' });
+      return false;
+    }
+    return true;
   },
 
   login: function(callback) {

@@ -12,7 +12,8 @@
     "pages/order-confirm/order-confirm",
     "pages/order/order",
     "pages/order-detail/order-detail",
-    "pages/pay-result/pay-result"
+    "pages/pay-result/pay-result",
+    "pages/login/login"
   ],
   "window": {
     "backgroundTextStyle": "light",
