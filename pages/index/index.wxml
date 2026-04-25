@@ -46,4 +46,10 @@
 
   <view class="loading" wx:if="{{loading}}"></view>
   <view class="no-more" wx:if="{{!hasMore && products.length > 0}}">没有更多了</view>
+
+  <!-- 加购物车提示条 -->
+  <view class="cart-toast {{cartToastShow ? 'show' : ''}}">
+    <text class="cart-toast-icon">✓</text>
+    <text class="cart-toast-text">{{cartToastMsg}}</text>
+  </view>
 </view>

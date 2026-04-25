@@ -25,7 +25,7 @@ Page({
   loadProductDetail: function(id) {
     this.setData({ loading: true });
     request({
-      url: '/goods/details',
+      url: '/buy',
       data: { id: id }
     }).then(res => {
       if (res.status === 200 && res.data.length > 0) {

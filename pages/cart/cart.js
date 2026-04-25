@@ -78,15 +78,28 @@ Page({
     const action = e.currentTarget.dataset.action;
     const cartItems = this.data.cartItems;
     const index = cartItems.findIndex(item => item.id === id);
-    if (index !== -1) {
-      if (action === 'increase') {
-        cartItems[index].quantity += 1;
-      } else if (action === 'decrease' && cartItems[index].quantity > 1) {
-        cartItems[index].quantity -= 1;
-      }
-      this.setData({ cartItems: cartItems });
-      this.calculateTotal();
+    if (index === -1) return;
+
+    let newQty = cartItems[index].quantity;
+    if (action === 'increase') {
+      newQty += 1;
+    } else if (action === 'decrease') {
+      if (newQty <= 1) return;
+      newQty -= 1;
     }
+
+    // 先更新本地
+    cartItems[index].quantity = newQty;
+    this.setData({ cartItems: cartItems });
+    this.calculateTotal();
+
+    // 同步到后端
+    request({
+      url: '/cart/update',
+      method: 'POST',
+      data: { id: id, quantity: newQty },
+      showLoading: false
+    }).catch(() => {});
   },
 
   deleteItem: function(e) {
@@ -98,11 +111,14 @@ Page({
         if (res.confirm) {
           request({
             url: '/cart/del',
-            data: { currentID: id }
+            method: 'POST',
+            data: { id: id }
           }).then(res => {
             if (res.status === 200) {
               wx.showToast({ title: '已删除', icon: 'success' });
               this.loadCartData();
+            } else {
+              wx.showToast({ title: res.msg || '删除失败', icon: 'none' });
             }
           }).catch(() => {
             wx.showToast({ title: '删除失败', icon: 'none' });

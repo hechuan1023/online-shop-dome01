@@ -133,19 +133,46 @@ router.get("/goods/details", (req, res) => {
 
 router.post("/cart/add", (req, res) => {
     const { title, price, image, currentID } = req.body;
-    const sql = "insert into cart (title, image, price, currentID) values (?,?,?,?)";
-    SQLConnect(sql, [title, image, price, currentID], (result) => {
-        if (result.affectedRows > 0) {
-            res.send({
-                status: 200,
-                success: true,
-                msg: "添加成功"
-            })
-        } else {
-            res.status(500).send({
-                status: 500,
-                msg: "添加失败"
+    console.log("[加购物车] currentID:", currentID, "title:", title);
+    const checkSql = "SELECT id, quantity FROM cart WHERE currentID = ?";
+    SQLConnect(checkSql, [currentID], (rows) => {
+        if (rows && rows.length > 0) {
+            const newQty = rows[0].quantity + 1;
+            console.log("[加购物车] 已存在, id:", rows[0].id, "数量:", rows[0].quantity, "->", newQty);
+            const updateSql = "UPDATE cart SET quantity = ? WHERE id = ?";
+            SQLConnect(updateSql, [newQty, rows[0].id], (result) => {
+                console.log("[加购物车] 更新结果:", result.affectedRows);
+                res.send({ status: 200, success: true, msg: "数量+1" });
             });
+        } else {
+            console.log("[加购物车] 新商品, 执行插入");
+            const insertSql = "INSERT INTO cart (title, image, price, currentID, quantity) VALUES (?,?,?,?,1)";
+            SQLConnect(insertSql, [title, image, price, currentID], (result) => {
+                console.log("[加购物车] 插入结果:", JSON.stringify(result));
+                if (result.affectedRows > 0) {
+                    res.send({ status: 200, success: true, msg: "添加成功" });
+                } else {
+                    res.status(500).send({ status: 500, msg: "添加失败" });
+                }
+            });
+        }
+    })
+});
+
+/**
+ * 更新购物车商品数量
+ */
+router.post("/cart/update", (req, res) => {
+    const { id, quantity } = req.body;
+    if (!id || !quantity || quantity < 1) {
+        return res.status(400).send({ status: 400, msg: "参数错误" });
+    }
+    const sql = "UPDATE cart SET quantity = ? WHERE id = ?";
+    SQLConnect(sql, [quantity, id], (result) => {
+        if (result.affectedRows > 0) {
+            res.send({ status: 200, success: true });
+        } else {
+            res.status(500).send({ status: 500, msg: "更新失败" });
         }
     })
 });
@@ -173,19 +200,17 @@ router.get("/cart", (req, res) => {
 /**
  * 删除购物车
  */
-router.get("/cart/del", (req, res) => {
-    var id = url.parse(req.url, true).query.currentID;
-    const sql = "DELETE FROM cart WHERE id=?";
+router.post("/cart/del", (req, res) => {
+    const { id } = req.body;
+    if (!id) {
+        return res.status(400).send({ status: 400, msg: "缺少参数" });
+    }
+    const sql = "DELETE FROM cart WHERE id = ?";
     SQLConnect(sql, [id], (result) => {
         if (result.affectedRows > 0) {
-            res.send({
-                status: 200,
-                success: true
-            })
+            res.send({ status: 200, success: true, msg: "删除成功" });
         } else {
-            res.status(500).send({
-                msg: "删除失败"
-            });
+            res.status(500).send({ status: 500, msg: "删除失败" });
         }
     })
 });
@@ -238,47 +263,25 @@ router.get("/category", (req, res) => {
  */
 
 router.post("/login", (req, res) => {
-    const { code } = req.body;
-    console.log(" 传入临时登录凭证js_code，返回当前用户的openid和session_key ")
-    console.log(" 微信接口 https://api.weixin.qq.com/sns/jscode2session ")
-    console.log(" 临时凭证 js_code   =",code)
-    console.log(" 临时凭证 appid     =",appid)
-    console.log(" 临时凭证 secret    =",secret)
-    console.log(" 临时凭证 grant_type=",authorization_code)
+    // Mock 登录：直接返回模拟的 openid 和 token，不调用微信接口
+    const mockOpenid = "mock_openid_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+    const mockSessionKey = "mock_session_" + Date.now();
+    const token = "mock_token_" + mockOpenid + "_" + Date.now();
 
-    request(`https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${code}&grant_type=${authorization_code}`, (err, response, body) => {
-        if (err) console.log(err);
-        const data = JSON.parse(body);
-        console.log("返回值openid  = ",data.openid)
-        console.log("返回值session_key  = ",data.session_key)
+    console.log("[Mock登录] openid =", mockOpenid);
+    console.log("[Mock登录] token  =", token);
 
-        // 生成token，实际生成环境一般用JWT生成
-        const token = `mock_token_for_${data.openid}_${Date.now()}`;
+    // 可选：存入数据库（如果 user 表存在的话）
+    const sql = "INSERT INTO user (openid, session_key) VALUES (?,?) ON DUPLICATE KEY UPDATE session_key = VALUES(session_key)";
+    SQLConnect(sql, [mockOpenid, mockSessionKey], (result) => {
+        console.log("[Mock登录] 数据库写入", result.affectedRows > 0 ? "成功" : "跳过");
+    });
 
-        console.log("将openid存入user表");
-        const sql = "insert into user (openid, session_key) values (?,?) on duplicate key update session_key = values(session_key)"
-        if(data.openid && data.session_key){
-            SQLConnect(sql, [data.openid,data.session_key], (result) => {
-                if (result.affectedRows > 0) {
-                    res.send({
-                        status: 200,
-                        data: {openid:data.openid,token:token},
-                        msg: "登录成功"
-                    })
-                } else {
-                    res.status(500).send({
-                        status: 500,
-                        msg: "登录失败"
-                    });
-                }
-            })
-        }else{
-            res.send({
-                status:500,
-                msg:"登录失败"
-            })
-        }
-    })
+    res.send({
+        status: 200,
+        data: { openid: mockOpenid, token: token },
+        msg: "登录成功"
+    });
 })
 
 // ============ 收货地址 API ============

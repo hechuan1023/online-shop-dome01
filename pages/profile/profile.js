@@ -1,3 +1,4 @@
+const request = require('../../util/request');
 const app = getApp();
 
 Page({
@@ -11,12 +12,16 @@ Page({
       orderCount: 0,
       favoriteCount: 0,
       couponCount: 0,
-      points: 0
+      points: 0,
+      unpaidCount: 0,
+      unshipCount: 0,
+      shippedCount: 0
     }
   },
 
   onShow: function() {
     this.loadUserInfo();
+    this.loadOrderStats();
   },
 
   loadUserInfo: function() {
@@ -39,6 +44,38 @@ Page({
         }
       });
     }
+  },
+
+  loadOrderStats: function() {
+    if (!app.globalData.isLoggedIn) return;
+
+    // 获取待付款订单数
+    request({ url: '/order/list?status=0', showLoading: false }).then(res => {
+      if (res.status === 200) {
+        this.setData({ 'stats.unpaidCount': res.data.data ? res.data.data.length : 0 });
+      }
+    }).catch(() => {});
+
+    // 获取待发货订单数
+    request({ url: '/order/list?status=1', showLoading: false }).then(res => {
+      if (res.status === 200) {
+        this.setData({ 'stats.unshipCount': res.data.data ? res.data.data.length : 0 });
+      }
+    }).catch(() => {});
+
+    // 获取待收货订单数
+    request({ url: '/order/list?status=2', showLoading: false }).then(res => {
+      if (res.status === 200) {
+        this.setData({ 'stats.shippedCount': res.data.data ? res.data.data.length : 0 });
+      }
+    }).catch(() => {});
+
+    // 获取全部订单数
+    request({ url: '/order/list', showLoading: false }).then(res => {
+      if (res.status === 200) {
+        this.setData({ 'stats.orderCount': res.data.data ? res.data.data.length : 0 });
+      }
+    }).catch(() => {});
   },
 
   goToLogin: function() {
@@ -65,16 +102,21 @@ Page({
     });
   },
 
-  editProfile: function() {
-    wx.showToast({
-      title: '跳转到编辑页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到编辑个人信息页面
+  showQRCode: function() {
+    wx.showToast({ title: '功能开发中', icon: 'none' });
+  },
+
+  switchTab: function(e) {
+    const status = e.currentTarget.dataset.status;
+    wx.navigateTo({ url: '/pages/order/order?status=' + status });
   },
 
   goToOrders: function() {
     wx.navigateTo({ url: '/pages/order/order' });
+  },
+
+  goToRefund: function() {
+    wx.showToast({ title: '退换货功能开发中', icon: 'none' });
   },
 
   goToAddress: function() {
@@ -89,27 +131,23 @@ Page({
     wx.showToast({ title: '优惠券功能开发中', icon: 'none' });
   },
 
+  goToPoints: function() {
+    wx.showToast({ title: '积分商城开发中', icon: 'none' });
+  },
+
   goToSettings: function() {
-    wx.showToast({
-      title: '跳转到设置页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到设置页面
+    wx.showToast({ title: '设置功能开发中', icon: 'none' });
   },
 
   goToHelp: function() {
-    wx.showToast({
-      title: '跳转到帮助页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到帮助页面
+    wx.showToast({ title: '帮助中心开发中', icon: 'none' });
   },
 
   goToAbout: function() {
-    wx.showToast({
-      title: '跳转到关于页面',
-      icon: 'none'
-    });
-    // 这里应该跳转到关于页面
+    wx.showToast({ title: '关于我们开发中', icon: 'none' });
+  },
+
+  contactService: function() {
+    wx.showToast({ title: '客服功能开发中', icon: 'none' });
   }
 });

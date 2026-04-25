@@ -4,9 +4,10 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #fff;
+  background: linear-gradient(180deg, #fff 0%, #f7f8fa 100%);
 }
 
+/* ========== Logo区域 ========== */
 .logo-section {
   display: flex;
   flex-direction: column;
@@ -14,25 +15,49 @@
   margin-bottom: 120rpx;
 }
 
+.logo-wrap {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 40rpx;
+}
+
 .logo {
   width: 180rpx;
   height: 180rpx;
   border-radius: 40rpx;
-  margin-bottom: 30rpx;
+  position: absolute;
+  top: 10rpx;
+  left: 10rpx;
+  z-index: 2;
+  box-shadow: 0 8rpx 30rpx rgba(230, 67, 64, 0.15);
+}
+
+.logo-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 44rpx;
+  border: 2rpx solid rgba(230, 67, 64, 0.1);
 }
 
 .app-name {
-  font-size: 48rpx;
+  font-size: 52rpx;
   font-weight: bold;
-  color: #333;
+  color: #1a1a1a;
   margin-bottom: 16rpx;
+  letter-spacing: 4rpx;
 }
 
 .app-desc {
   font-size: 28rpx;
   color: #999;
+  letter-spacing: 2rpx;
 }
 
+/* ========== 登录按钮 ========== */
 .login-section {
   width: 100%;
   padding: 0 80rpx;
@@ -45,21 +70,65 @@
   width: 100%;
   height: 96rpx;
   line-height: 96rpx;
-  background-color: #07c160;
+  background: linear-gradient(135deg, #07c160, #06ae56);
   color: #fff;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 500;
   border-radius: 48rpx;
   border: none;
   letter-spacing: 4rpx;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
 }
 
 .btn-wechat::after {
   border: none;
 }
 
+.btn-wechat:active {
+  opacity: 0.85;
+}
+
+.btn-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .login-tip {
   font-size: 24rpx;
-  color: #999;
+  color: #bbb;
   margin-top: 30rpx;
+}
+
+/* ========== 开发调试 ========== */
+.dev-section {
+  margin-top: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dev-hint {
+  font-size: 22rpx;
+  color: #ddd;
+  margin-bottom: 16rpx;
+}
+
+.btn-dev {
+  background: transparent;
+  color: #ccc;
+  font-size: 24rpx;
+  border: 1rpx dashed #ddd;
+  padding: 12rpx 40rpx;
+  border-radius: 30rpx;
+  line-height: 1.5;
+}
+
+.btn-dev::after {
+  border: none;
+}
+
+.btn-dev:active {
+  color: #999;
+  border-color: #999;
 }

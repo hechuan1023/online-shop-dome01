@@ -2,7 +2,7 @@ const app = getApp();
 
 const request = (options) => {
   return new Promise((resolve, reject) => {
-    const { url, method = 'GET', data = {}, showLoading = true } = options;
+    const { url, method = 'GET', data = {}, showLoading = true, timeout = 10000 } = options;
 
     if (showLoading) {
       wx.showLoading({ title: '加载中...', mask: true });
@@ -12,22 +12,24 @@ const request = (options) => {
       url: app.globalData.baseUrl + url,
       method: method,
       data: data,
+      timeout: timeout,
       header: {
         'content-type': 'application/json',
         'token': app.globalData.token || ''
       },
       success: (res) => {
         if (showLoading) wx.hideLoading();
-        if (res.statusCode === 200) {
+        console.log('[请求成功]', url, '状态码:', res.statusCode, '数据:', JSON.stringify(res.data));
+        if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(res.data);
         } else {
-          reject(res);
+          reject({ msg: '请求失败', statusCode: res.statusCode, data: res.data });
         }
       },
       fail: (err) => {
         if (showLoading) wx.hideLoading();
-        wx.showToast({ title: '网络错误', icon: 'none' });
-        reject(err);
+        console.log('[请求失败]', url, JSON.stringify(err));
+        reject({ msg: '网络错误', err: err });
       }
     });
   });

@@ -7,13 +7,15 @@
         <view class="item-info">
           <text class="item-name">{{item.title}}</text>
           <text class="item-price">¥{{item.price}}</text>
-          <view class="quantity-control">
-            <button class="btn-quantity" data-id="{{item.id}}" data-action="decrease" bindtap="changeQuantity">-</button>
-            <text class="quantity">{{item.quantity}}</text>
-            <button class="btn-quantity" data-id="{{item.id}}" data-action="increase" bindtap="changeQuantity">+</button>
+          <view class="item-actions">
+            <view class="quantity-control">
+              <button class="btn-quantity {{item.quantity <= 1 ? 'disabled' : ''}}" data-id="{{item.id}}" data-action="decrease" bindtap="changeQuantity">-</button>
+              <text class="quantity">{{item.quantity}}</text>
+              <button class="btn-quantity" data-id="{{item.id}}" data-action="increase" bindtap="changeQuantity">+</button>
+            </view>
+            <text class="btn-delete" data-id="{{item.id}}" bindtap="deleteItem">删除</text>
           </view>
         </view>
-        <button class="btn-delete" data-id="{{item.id}}" bindtap="deleteItem">删除</button>
       </view>
     </block>
   </view>

@@ -1,13 +1,16 @@
 <view class="container">
   <view class="logo-section">
-    <image class="logo" src="/images/default-avatar.png" mode="aspectFit"></image>
+    <view class="logo-wrap">
+      <image class="logo" src="/images/default-avatar.png" mode="aspectFit"></image>
+      <view class="logo-ring"></view>
+    </view>
     <text class="app-name">BZShop</text>
     <text class="app-desc">品质好物，尽在指尖</text>
   </view>
 
   <view class="login-section">
     <button class="btn-wechat" bindtap="wechatLogin">
-      <text class="wechat-icon">微信一键登录</text>
+      <text class="btn-text">微信一键登录</text>
     </button>
     <text class="login-tip">登录后可享受完整购物服务</text>
   </view>

@@ -5,6 +5,8 @@ Page({
   data: {
     banners: [],
     hotKeywords: [],
+    cartToastShow: false,
+    cartToastMsg: '',
     categories: [
       { id: 1, name: '手机', tag: 'phone', icon: '/images/cat-phone.png' },
       { id: 2, name: '电脑', tag: 'computer', icon: '/images/cat-computer.png' },
@@ -127,10 +129,22 @@ Page({
       }
     }).then(res => {
       if (res.status === 200) {
-        wx.showToast({ title: '已加入购物车', icon: 'success' });
+        const msg = res.msg === '数量+1' ? '购物车数量 +1' : '已加入购物车';
+        this.showCartToast(msg);
       }
-    }).catch(() => {
-      wx.showToast({ title: '添加失败', icon: 'none' });
+    }).catch((err) => {
+      console.log('[加购物车] 失败:', JSON.stringify(err));
+      this.showCartToast('添加失败');
     });
+  },
+
+  showCartToast: function(msg) {
+    if (this.cartToastTimer) {
+      clearTimeout(this.cartToastTimer);
+    }
+    this.setData({ cartToastShow: true, cartToastMsg: msg });
+    this.cartToastTimer = setTimeout(() => {
+      this.setData({ cartToastShow: false });
+    }, 2000);
   }
 });
