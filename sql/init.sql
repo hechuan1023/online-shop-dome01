@@ -60,6 +60,26 @@ CREATE TABLE IF NOT EXISTS cart (
   create_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 商品多图表
+CREATE TABLE IF NOT EXISTS goods_images (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  goods_id INT NOT NULL,
+  image VARCHAR(500) NOT NULL,
+  sort_order INT DEFAULT 0,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 商品评价表
+CREATE TABLE IF NOT EXISTS goods_reviews (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  goods_id INT NOT NULL,
+  user_name VARCHAR(50) DEFAULT '匿名用户',
+  user_avatar VARCHAR(500) DEFAULT '/images/default-avatar.png',
+  rating TINYINT NOT NULL DEFAULT 5 COMMENT '1-5星',
+  content TEXT NOT NULL,
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 商品分类表
 CREATE TABLE IF NOT EXISTS category (
   id INT PRIMARY KEY AUTO_INCREMENT,

@@ -64,10 +64,11 @@
     </view>
   </view>
 
-  <view class="bottom-bar" wx:if="{{order.status === 0 || order.status === 2}}">
+  <view class="bottom-bar" wx:if="{{order.status === 0 || order.status === 2 || order.status === 3 || order.status === 4}}">
     <button class="btn-action" wx:if="{{order.status === 0}}" bindtap="cancelOrder">取消订单</button>
     <button class="btn-action primary" wx:if="{{order.status === 0}}" bindtap="payOrder">立即付款</button>
     <button class="btn-action primary" wx:if="{{order.status === 2}}" bindtap="confirmReceive">确认收货</button>
+    <button class="btn-action btn-delete" wx:if="{{order.status === 3 || order.status === 4}}" bindtap="deleteOrder">删除订单</button>
   </view>
 </view>
 

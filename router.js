@@ -216,6 +216,65 @@ router.post("/cart/del", (req, res) => {
 });
 
 /**
+ * 商品多图
+ */
+router.get("/goods/images", (req, res) => {
+    var goods_id = url.parse(req.url, true).query.goods_id;
+    const sql = "SELECT * FROM goods_images WHERE goods_id = ? ORDER BY sort_order ASC";
+    SQLConnect(sql, [goods_id], (result) => {
+        res.send({ status: 200, data: result || [] });
+    })
+});
+
+/**
+ * 商品评价
+ */
+router.get("/goods/reviews", (req, res) => {
+    var goods_id = url.parse(req.url, true).query.goods_id;
+    const sql = "SELECT * FROM goods_reviews WHERE goods_id = ? ORDER BY create_time DESC";
+    SQLConnect(sql, [goods_id], (result) => {
+        res.send({ status: 200, data: result || [] });
+    })
+});
+
+/**
+ * 初始化 mock 数据（开发用：GET /api/init/mock）
+ */
+router.get("/init/mock", (req, res) => {
+    SQLConnect("SELECT id FROM goods", [], (goods) => {
+        if (!goods || goods.length === 0) {
+            return res.send({ status: 200, msg: "没有商品数据，请先插入商品" });
+        }
+        goods.forEach(g => {
+            // 每个商品插入3张多图
+            SQLConnect("SELECT COUNT(*) as cnt FROM goods_images WHERE goods_id=?", [g.id], (r) => {
+                if (r[0].cnt === 0) {
+                    for (let i = 1; i <= 3; i++) {
+                        SQLConnect("INSERT INTO goods_images (goods_id, image, sort_order) VALUES (?,?,?)",
+                            [g.id, '/images/goods/' + g.id + '_' + i + '.webp', i], () => {});
+                    }
+                }
+            });
+            // 每个商品插入3条评价
+            SQLConnect("SELECT COUNT(*) as cnt FROM goods_reviews WHERE goods_id=?", [g.id], (r) => {
+                if (r[0].cnt === 0) {
+                    const reviews = [
+                        { name: '张三', rating: 5, content: '非常好用，强烈推荐！' },
+                        { name: '李四', rating: 4, content: '质量不错，物流很快，好评。' },
+                        { name: '王五', rating: 5, content: '性价比很高，会回购的。' }
+                    ];
+                    reviews.forEach(rv => {
+                        SQLConnect("INSERT INTO goods_reviews (goods_id, user_name, rating, content) VALUES (?,?,?,?)",
+                            [g.id, rv.name, rv.rating, rv.content], () => {});
+                    });
+                }
+            });
+        });
+        res.send({ status: 200, msg: "mock数据初始化完成", goodsCount: goods.length });
+    })
+});
+
+/**
  * 购买商品查询
  */
 router.get("/buy", (req, res) => {

@@ -148,6 +148,12 @@
   color: #fff;
 }
 
+.btn-action.btn-delete {
+  background-color: #fff;
+  color: #999;
+  border: 1rpx solid #ddd;
+}
+
 .empty-tip {
   display: flex;
   flex-direction: column;

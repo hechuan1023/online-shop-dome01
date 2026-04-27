@@ -33,6 +33,7 @@
             <button class="btn-action" wx:if="{{item.status === 0}}" catchtap="cancelOrder" data-no="{{item.order_no}}">取消</button>
             <button class="btn-action primary" wx:if="{{item.status === 0}}" catchtap="payOrder" data-no="{{item.order_no}}">去付款</button>
             <button class="btn-action primary" wx:if="{{item.status === 2}}" catchtap="confirmReceive" data-no="{{item.order_no}}">确认收货</button>
+            <button class="btn-action btn-delete" wx:if="{{item.status === 3 || item.status === 4}}" catchtap="deleteOrder" data-no="{{item.order_no}}">删除</button>
           </view>
         </view>
       </view>

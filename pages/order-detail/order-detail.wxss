@@ -198,3 +198,9 @@
   background-color: #e64340;
   color: #fff;
 }
+
+.btn-action.btn-delete {
+  background-color: #fff;
+  color: #999;
+  border: 1rpx solid #ddd;
+}

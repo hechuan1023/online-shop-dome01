@@ -5,13 +5,15 @@ Page({
   data: {
     product: null,
     productId: null,
-    loading: true
+    loading: true,
+    reviews: []
   },
 
   onLoad: function(options) {
     const id = options.id;
     this.setData({ productId: id });
     this.loadProductDetail(id);
+    this.loadReviews(id);
   },
 
   onShareAppMessage: function() {
@@ -24,22 +26,21 @@ Page({
 
   loadProductDetail: function(id) {
     this.setData({ loading: true });
+    // 获取商品基本信息
     request({
       url: '/buy',
-      data: { id: id }
+      data: { id: id },
+      showLoading: false
     }).then(res => {
       if (res.status === 200 && res.data.length > 0) {
         const product = {
           ...res.data[0],
+          images: [],  // 先初始化，后面填充
           image: res.data[0].image.startsWith('http') ? res.data[0].image : app.globalData.serverUrl + res.data[0].image
         };
         this.setData({ product });
-        wx.getImageInfo({
-          src: product.image,
-          success: (imgRes) => {
-            this.setData({ 'product.localImage': imgRes.path });
-          }
-        });
+        // 加载多图
+        this.loadProductImages(id, product);
       } else {
         wx.showToast({ title: '商品不存在', icon: 'none' });
       }
@@ -50,14 +51,59 @@ Page({
     });
   },
 
-  previewImage: function() {
-    const product = this.data.product;
-    if (product && product.image) {
-      wx.previewImage({
-        current: product.image,
-        urls: [product.image]
-      });
-    }
+  loadProductImages: function(id, product) {
+    request({
+      url: '/goods/images',
+      data: { goods_id: id },
+      showLoading: false
+    }).then(res => {
+      if (res.status === 200 && res.data.length > 0) {
+        const images = res.data.map(img => ({
+          ...img,
+          image: img.image.startsWith('http') ? img.image : app.globalData.serverUrl + img.image
+        }));
+        product.images = images;
+        this.setData({ product });
+        // 预加载图片
+        images.forEach((img, i) => {
+          wx.getImageInfo({
+            src: img.image,
+            success: (imgRes) => {
+              const key = 'product.images[' + i + '].localImage';
+              this.setData({ [key]: imgRes.path });
+            }
+          });
+        });
+      } else {
+        // 没有多图，用主图兜底
+        product.images = [{ id: 0, image: product.image, localImage: product.localImage }];
+        this.setData({ product });
+      }
+    }).catch(() => {
+      product.images = [{ id: 0, image: product.image, localImage: product.localImage }];
+      this.setData({ product });
+    });
+  },
+
+  loadReviews: function(id) {
+    request({
+      url: '/goods/reviews',
+      data: { goods_id: id },
+      showLoading: false
+    }).then(res => {
+      if (res.status === 200) {
+        this.setData({ reviews: res.data || [] });
+      }
+    }).catch(() => {});
+  },
+
+  previewImage: function(e) {
+    const url = e.currentTarget.dataset.url;
+    const urls = this.data.product.images.map(img => img.image);
+    wx.previewImage({
+      current: url,
+      urls: urls.length > 0 ? urls : [this.data.product.image]
+    });
   },
 
   addToCart: function() {
@@ -74,9 +120,7 @@ Page({
       }
     }).then(res => {
       if (res.status === 200) {
-        wx.showToast({ title: '已加入购物车', icon: 'success' });
-      } else {
-        wx.showToast({ title: res.msg || '添加失败', icon: 'none' });
+        wx.showToast({ title: res.msg === '数量+1' ? '购物车数量+1' : '已加入购物车', icon: 'success' });
       }
     }).catch(() => {
       wx.showToast({ title: '添加失败', icon: 'none' });

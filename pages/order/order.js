@@ -138,5 +138,27 @@ Page({
         }
       }
     });
+  },
+
+  deleteOrder: function(e) {
+    const order_no = e.currentTarget.dataset.no;
+    wx.showModal({
+      title: '提示',
+      content: '确定删除该订单吗？删除后不可恢复。',
+      success: (res) => {
+        if (res.confirm) {
+          request({
+            url: '/order/delete',
+            method: 'POST',
+            data: { order_no: order_no }
+          }).then(res => {
+            if (res.status === 200) {
+              wx.showToast({ title: '已删除', icon: 'success' });
+              this.loadOrders();
+            }
+          });
+        }
+      }
+    });
   }
 });
