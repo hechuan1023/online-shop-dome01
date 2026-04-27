@@ -121,6 +121,12 @@
         </view>
         <text class="menu-text">我的收藏</text>
       </view>
+      <view class="menu-item" bindtap="contactService">
+        <view class="menu-icon-wrap icon-service">
+          <text class="menu-icon">💬</text>
+        </view>
+        <text class="menu-text">联系客服</text>
+      </view>
       <view class="menu-item" bindtap="goToCoupons">
         <view class="menu-icon-wrap icon-coupon">
           <text class="menu-icon">🎫</text>
@@ -150,12 +156,6 @@
           <text class="menu-icon">ℹ</text>
         </view>
         <text class="menu-text">关于我们</text>
-      </view>
-      <view class="menu-item" bindtap="contactService">
-        <view class="menu-icon-wrap icon-service">
-          <text class="menu-icon">💬</text>
-        </view>
-        <text class="menu-text">联系客服</text>
       </view>
     </view>
   </view>

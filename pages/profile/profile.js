@@ -148,6 +148,6 @@ Page({
   },
 
   contactService: function() {
-    wx.showToast({ title: '客服功能开发中', icon: 'none' });
+    wx.navigateTo({ url: '/pages/customer-service/customer-service' });
   }
 });

@@ -1,0 +1,84 @@
+<view class="container">
+  <!-- 聊天区域 -->
+  <scroll-view class="chat-body" scroll-y="true" scroll-with-animation="true" scroll-into-view="{{scrollToView}}">
+    <view class="chat-list">
+      <block wx:for="{{messages}}" wx:key="id">
+        <!-- 机器人消息 -->
+        <view class="msg-row msg-left" wx:if="{{item.type === 'bot'}}">
+          <view class="msg-avatar">
+            <text class="avatar-icon">🤖</text>
+          </view>
+          <view class="msg-content-wrap">
+            <text class="msg-name">客服小美</text>
+            <view class="msg-bubble msg-bubble-bot">
+              <text class="msg-text">{{item.content}}</text>
+            </view>
+            <text class="msg-time">{{item.timestamp}}</text>
+          </view>
+        </view>
+
+        <!-- 用户消息 -->
+        <view class="msg-row msg-right" wx:if="{{item.type === 'user'}}">
+          <view class="msg-content-wrap">
+            <view class="msg-bubble msg-bubble-user">
+              <text class="msg-text">{{item.content}}</text>
+            </view>
+            <text class="msg-time msg-time-right">{{item.timestamp}}</text>
+          </view>
+          <view class="msg-avatar msg-avatar-user">
+            <text class="avatar-icon">😊</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 正在输入中 -->
+      <view class="msg-row msg-left" wx:if="{{sending}}">
+        <view class="msg-avatar">
+          <text class="avatar-icon">🤖</text>
+        </view>
+        <view class="msg-content-wrap">
+          <text class="msg-name">客服小美</text>
+          <view class="msg-bubble msg-bubble-bot typing-bubble">
+            <view class="typing-dots">
+              <view class="dot dot1"></view>
+              <view class="dot dot2"></view>
+              <view class="dot dot3"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 快捷问题 -->
+  <view class="quick-questions" wx:if="{{messages.length <= 1}}">
+    <text class="quick-title">常见问题</text>
+    <view class="quick-tags">
+      <view class="quick-tag" catchtap="onQuickQuestion" data-message="物流查询">📦 物流查询</view>
+      <view class="quick-tag" catchtap="onQuickQuestion" data-message="退换货">🔄 退换货</view>
+      <view class="quick-tag" catchtap="onQuickQuestion" data-message="优惠券">🎫 优惠券</view>
+      <view class="quick-tag" catchtap="onQuickQuestion" data-message="支付方式">💳 支付方式</view>
+      <view class="quick-tag" catchtap="onQuickQuestion" data-message="人工客服">👨‍💼 人工客服</view>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-bar">
+    <input
+      class="chat-input"
+      type="text"
+      value="{{inputValue}}"
+      placeholder="请输入您的问题..."
+      placeholder-class="input-placeholder"
+      bindinput="onInput"
+      bindfocus="onFocus"
+      bindconfirm="sendMessage"
+      confirm-type="send"
+      maxlength="200"
+      cursor-spacing="10"
+    />
+    <view class="send-btn {{inputValue.trim() ? 'send-btn-active' : ''}}" catchtap="sendMessage">
+      <text class="send-icon">➤</text>
+    </view>
+  </view>
+</view>

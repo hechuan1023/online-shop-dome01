@@ -13,25 +13,35 @@
   display: flex;
   align-items: flex-start;
   background-color: #fff;
-  margin-bottom: 16rpx;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  box-shadow: 0 1rpx 8rpx rgba(0, 0, 0, 0.04);
+  margin-bottom: 20rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1rpx solid #f0f0f0;
+}
+
+.cart-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.06);
 }
 
 .item-checkbox {
-  margin-right: 12rpx;
+  margin-right: 16rpx;
   margin-top: 60rpx;
   flex-shrink: 0;
+  transform: scale(1.2);
 }
 
 .item-image {
-  width: 150rpx;
-  height: 150rpx;
-  border-radius: 8rpx;
-  margin-right: 16rpx;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
   flex-shrink: 0;
   background-color: #f5f5f5;
+  object-fit: cover;
+  border: 1rpx solid #f0f0f0;
 }
 
 .item-info {
@@ -42,21 +52,25 @@
 }
 
 .item-name {
-  font-size: 28rpx;
-  color: #333;
+  font-size: 30rpx;
+  color: #2c3e50;
   line-height: 1.4;
+  font-weight: 500;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
 }
 
 .item-price {
-  font-size: 32rpx;
-  color: #e64340;
+  font-size: 34rpx;
+  color: #e74c3c;
   font-weight: bold;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
+  background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .item-actions {
@@ -69,20 +83,27 @@
   display: flex;
   align-items: center;
   border: 1rpx solid #ddd;
-  border-radius: 4rpx;
+  border-radius: 8rpx;
   overflow: hidden;
+  background: #fafafa;
 }
 
 .btn-quantity {
-  width: 48rpx;
-  height: 48rpx;
-  line-height: 48rpx;
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
   text-align: center;
-  background-color: #f8f8f8;
-  font-size: 28rpx;
+  background: linear-gradient(135deg, #f8f8f8, #e9e9e9);
+  font-size: 32rpx;
   padding: 0;
   border: none;
   border-radius: 0;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.btn-quantity:active {
+  background: linear-gradient(135deg, #e9e9e9, #d0d0d0);
 }
 
 .btn-quantity.disabled {
@@ -90,23 +111,30 @@
 }
 
 .quantity {
-  padding: 0 20rpx;
-  font-size: 26rpx;
-  min-width: 50rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  min-width: 56rpx;
   text-align: center;
   border-left: 1rpx solid #ddd;
   border-right: 1rpx solid #ddd;
+  background: #fff;
+  color: #2c3e50;
+  font-weight: 500;
 }
 
-/* 删除按钮 — 简洁文字链接 */
+/* 删除按钮 */
 .btn-delete {
-  font-size: 24rpx;
-  color: #999;
-  padding: 8rpx 12rpx;
+  font-size: 26rpx;
+  color: #e74c3c;
+  padding: 12rpx 16rpx;
+  border-radius: 6rpx;
+  background: rgba(231, 76, 60, 0.1);
+  transition: all 0.3s ease;
 }
 
 .btn-delete:active {
-  color: #e64340;
+  background: rgba(231, 76, 60, 0.2);
+  transform: scale(0.95);
 }
 
 /* ========== 空购物车 ========== */
@@ -130,12 +158,20 @@
 }
 
 .btn-go-shopping {
-  background: linear-gradient(135deg, #e64340, #ff6b6b);
+  background: linear-gradient(135deg, #e74c3c, #ff6b6b);
   color: #fff;
   border: none;
-  padding: 18rpx 56rpx;
-  border-radius: 36rpx;
-  font-size: 28rpx;
+  padding: 20rpx 64rpx;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(231, 76, 60, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-go-shopping:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 6rpx rgba(231, 76, 60, 0.3);
 }
 
 /* ========== 底部结算栏 ========== */
@@ -182,10 +218,18 @@
 }
 
 .btn-checkout {
-  background: linear-gradient(135deg, #e64340, #ff6b6b);
+  background: linear-gradient(135deg, #e74c3c, #ff6b6b);
   color: #fff;
   border: none;
-  padding: 18rpx 40rpx;
-  border-radius: 36rpx;
-  font-size: 28rpx;
+  padding: 20rpx 48rpx;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(231, 76, 60, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-checkout:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 6rpx rgba(231, 76, 60, 0.3);
 }

@@ -605,6 +605,315 @@ router.post("/pay/create", (req, res) => {
         }
     })
 })
+// ============ 智能客服 API ============
+
+/**
+ * 知识库 - 关键词匹配回复
+ */
+const knowledgeBase = [
+    {
+        keywords: ['物流', '快递', '发货', '配送', '送到', '多久', '什么时候到', '多长时间'],
+        reply: '📦 关于物流：\n\n1. 您可以在"我的订单"中查看订单物流状态\n2. 一般下单后 24-48 小时内发货\n3. 国内快递通常 3-5 天送达\n\n如需查询具体订单物流，请提供订单号，我来帮您查询。'
+    },
+    {
+        keywords: ['退', '换', '退款', '退货', '售后', '退还'],
+        reply: '🔄 退换货政策：\n\n• 7天无理由退换货\n• 商品需保持原包装完好\n• 退款将在 3-5 个工作日内原路返回\n\n您可以在"我的订单"中找到对应订单，点击"申请售后"提交退换货申请。'
+    },
+    {
+        keywords: ['优惠', '券', '折扣', '活动', '满减'],
+        reply: '🎫 优惠券使用：\n\n1. 您可以在"我的-优惠券"中查看可用优惠券\n2. 下单时选择可用的优惠券即可自动抵扣\n3. 每张优惠券有使用门槛和有效期\n\n如需领取新优惠券，可以关注首页的优惠活动。'
+    },
+    {
+        keywords: ['支付', '付款', '钱', '微信', '支付宝', '银联'],
+        reply: '💳 支付方式：\n\n我们支持以下支付方式：\n• 微信支付\n• 支付宝\n• 银联卡\n\n如果支付遇到问题，请检查网络连接或更换支付方式重试。'
+    },
+    {
+        keywords: ['账户', '密码', '登录', '注册', '绑定', '手机号'],
+        reply: '👤 账户问题：\n\n• 您可以使用微信一键登录\n• 忘记密码可通过绑定的手机号找回\n• 如需修改个人信息，可在"我的-设置"中操作\n\n如有其他账户问题，请联系人工客服。'
+    },
+    {
+        keywords: ['人工', '客服', '找人工', '转人工', '真人'],
+        reply: '👨‍💼 如需联系人工客服，您可以通过以下方式：\n\n• 客服热线：400-888-8888\n• 服务时间：9:00 - 21:00\n\n您也可以留下联系方式，我们会尽快安排客服人员与您联系。'
+    },
+    {
+        keywords: ['你好', 'hi', 'hello', '在吗', '嗨', '早上好', '下午好', '晚上好'],
+        reply: '您好！😊 我是智能客服小美，很高兴为您服务！\n\n请问有什么可以帮您的吗？'
+    },
+    {
+        keywords: ['谢谢', '感谢', '谢了', '多谢', 'thanks'],
+        reply: '不客气！很高兴能帮到您 😊\n\n如果还有其他问题，随时可以问我哦~'
+    },
+    {
+        keywords: ['商品', '产品', '质量', '正品', '保证'],
+        reply: '🏷️ 商品质量保障：\n\n• 我们承诺所有商品均为正品\n• 支持7天无理由退换货\n• 如有质量问题，可免费退换\n\n您可以在商品详情页查看其他用户的评价作为参考。'
+    },
+    {
+        keywords: ['积分', '签到', '会员'],
+        reply: '💰 积分与会员：\n\n• 每日签到可获得积分\n• 购物消费可获得积分返点\n• 积分可在"积分商城"中兑换商品\n• 会员等级越高，享受的权益越多\n\n快去签到赚取积分吧！'
+    },
+    {
+        keywords: ['地址', '收货', '配送地址', '改地址'],
+        reply: '📍 收货地址管理：\n\n• 您可以在"我的-收货地址"中管理地址\n• 下单时可选择已有地址或新增地址\n• 可设置默认收货地址\n\n如需修改订单收货地址，请在发货前联系客服。'
+    }
+];
+
+function findBestReply(message) {
+    const msg = message.toLowerCase();
+    let bestMatch = null;
+    let bestScore = 0;
+    for (const item of knowledgeBase) {
+        let score = 0;
+        for (const keyword of item.keywords) {
+            if (msg.includes(keyword.toLowerCase())) {
+                score += keyword.length;
+            }
+        }
+        if (score > 0 && score > bestScore) {
+            bestScore = score;
+            bestMatch = item;
+        }
+    }
+    if (bestMatch) {
+        return bestMatch.reply;
+    }
+    return '抱歉，我可能没有完全理解您的问题 🤔\n\n您可以尝试询问以下问题：\n• 订单物流查询\n• 退换货政策\n• 优惠券使用\n• 支付方式\n• 账户问题\n\n或者输入"人工"联系人工客服（400-888-8888）。';
+}
+
+/**
+ * 发送聊天消息
+ * POST /api/chat/send
+ * Body: { message: string, sessionId: string }
+ */
+router.post("/chat/send", (req, res) => {
+    const { message, sessionId } = req.body;
+    if (!message || !message.trim()) {
+        return res.status(400).send({ status: 400, msg: "消息内容不能为空" });
+    }
+    console.log("[客服聊天] sessionId:", sessionId, "消息:", message);
+    const reply = findBestReply(message.trim());
+    const delay = 300 + Math.random() * 700;
+    setTimeout(() => {
+        res.send({
+            status: 200,
+            data: {
+                reply: reply,
+                sessionId: sessionId,
+                timestamp: new Date().toISOString()
+            }
+        });
+    }, delay);
+})
+// ============ 商品管理后台 API ============
+
+/**
+ * 添加商品
+ * POST /api/admin/goods/add
+ * Body: { title, price, image, description, stock, category }
+ *   category: 分类标签，如 phone/computer/earphone/appliance/clothing/food
+ */
+router.post("/admin/goods/add", (req, res) => {
+    const { title, price, image, description, stock, category } = req.body;
+    if (!title || !price) {
+        return res.status(400).send({ status: 400, msg: "商品名称和价格不能为空" });
+    }
+    const sql = "INSERT INTO goods (title, price, image, description, stock) VALUES (?,?,?,?,?)";
+    SQLConnect(sql, [title, price || 0, image || '', description || '', stock || 100], (result) => {
+        if (result.affectedRows > 0) {
+            const goodsId = result.insertId;
+            // 如果指定了分类，自动写入 category 表
+            if (category) {
+                const cateSql = "INSERT INTO category (cate, goods_id) VALUES (?,?)";
+                SQLConnect(cateSql, [category, goodsId], () => {});
+            }
+            res.send({ status: 200, msg: "添加成功", data: { id: goodsId } });
+        } else {
+            res.status(500).send({ status: 500, msg: "添加失败" });
+        }
+    });
+});
+
+/**
+ * 获取商品列表（带分页）
+ * GET /api/admin/goods/list?page=1&pageSize=20
+ */
+router.get("/admin/goods/list", (req, res) => {
+    const page = parseInt(url.parse(req.url, true).query.page) || 1;
+    const pageSize = parseInt(url.parse(req.url, true).query.pageSize) || 20;
+    const offset = (page - 1) * pageSize;
+    // 先查总数
+    SQLConnect("SELECT COUNT(*) as total FROM goods", [], (countResult) => {
+        const total = countResult[0].total;
+        const sql = "SELECT * FROM goods ORDER BY create_time DESC LIMIT ? OFFSET ?";
+        SQLConnect(sql, [pageSize, offset], (result) => {
+            res.send({
+                status: 200,
+                data: {
+                    list: result || [],
+                    total: total,
+                    page: page,
+                    pageSize: pageSize,
+                    totalPage: Math.ceil(total / pageSize)
+                }
+            });
+        });
+    });
+});
+
+/**
+ * 删除商品
+ * POST /api/admin/goods/delete
+ * Body: { id }
+ */
+router.post("/admin/goods/delete", (req, res) => {
+    const { id } = req.body;
+    if (!id) {
+        return res.status(400).send({ status: 400, msg: "缺少商品ID" });
+    }
+    // 先删分类关联
+    SQLConnect("DELETE FROM category WHERE goods_id=?", [id], () => {
+        // 再删商品
+        SQLConnect("DELETE FROM goods WHERE id=?", [id], (result) => {
+            if (result.affectedRows > 0) {
+                res.send({ status: 200, msg: "删除成功" });
+            } else {
+                res.status(500).send({ status: 500, msg: "商品不存在或删除失败" });
+            }
+        });
+    });
+});
+
+/**
+ * 修改商品
+ * POST /api/admin/goods/update
+ * Body: { id, title, price, image, description, stock }
+ */
+router.post("/admin/goods/update", (req, res) => {
+    const { id, title, price, image, description, stock } = req.body;
+    if (!id) {
+        return res.status(400).send({ status: 400, msg: "缺少商品ID" });
+    }
+    const sql = "UPDATE goods SET title=?, price=?, image=?, description=?, stock=? WHERE id=?";
+    SQLConnect(sql, [title, price, image, description, stock, id], (result) => {
+        if (result.affectedRows > 0) {
+            res.send({ status: 200, msg: "修改成功" });
+        } else {
+            res.status(500).send({ status: 500, msg: "商品不存在或修改失败" });
+        }
+    });
+});
+
+/**
+ * 获取所有分类及其商品数量
+ * GET /api/admin/category/list
+ */
+router.get("/admin/category/list", (req, res) => {
+    const sql = "SELECT cate, COUNT(*) as count, GROUP_CONCAT(goods_id) as goods_ids FROM category GROUP BY cate ORDER BY cate";
+    SQLConnect(sql, [], (result) => {
+        const categories = (result || []).map(item => ({
+            name: item.cate,
+            count: item.count,
+            goodsIds: item.goods_ids ? item.goods_ids.split(',').map(Number) : []
+        }));
+        res.send({ status: 200, data: categories });
+    });
+});
+
+/**
+ * 修改商品分类
+ * POST /api/admin/goods/setCategory
+ * Body: { goodsId, category }
+ *   category: 分类标签，如 phone/computer/earphone/appliance/clothing/food
+ */
+router.post("/admin/goods/setCategory", (req, res) => {
+    const { goodsId, category } = req.body;
+    if (!goodsId || !category) {
+        return res.status(400).send({ status: 400, msg: "缺少参数" });
+    }
+    // 先删除旧分类关联
+    SQLConnect("DELETE FROM category WHERE goods_id=?", [goodsId], () => {
+        // 插入新分类关联
+        SQLConnect("INSERT INTO category (cate, goods_id) VALUES (?,?)", [category, goodsId], (result) => {
+            if (result.affectedRows > 0) {
+                res.send({ status: 200, msg: "分类设置成功" });
+            } else {
+                res.status(500).send({ status: 500, msg: "设置失败" });
+            }
+        });
+    });
+});
+
+/**
+ * 批量添加商品（一次性添加多个）
+ * POST /api/admin/goods/batchAdd
+ * Body: { goods: [{ title, price, image, description, stock, category }, ...] }
+ */
+router.post("/admin/goods/batchAdd", (req, res) => {
+    const { goods } = req.body;
+    if (!goods || !Array.isArray(goods) || goods.length === 0) {
+        return res.status(400).send({ status: 400, msg: "商品列表不能为空" });
+    }
+    let success = 0;
+    let fail = 0;
+    let total = goods.length;
+    goods.forEach(item => {
+        const sql = "INSERT INTO goods (title, price, image, description, stock) VALUES (?,?,?,?,?)";
+        SQLConnect(sql, [item.title, item.price || 0, item.image || '', item.description || '', item.stock || 100], (result) => {
+            if (result.affectedRows > 0) {
+                success++;
+                if (item.category) {
+                    SQLConnect("INSERT INTO category (cate, goods_id) VALUES (?,?)", [item.category, result.insertId], () => {});
+                }
+            } else {
+                fail++;
+            }
+            // 全部处理完返回结果
+            if (success + fail === total) {
+                res.send({ status: 200, msg: "批量添加完成", data: { success, fail, total } });
+            }
+        });
+    });
+});
+
+/**
+ * 初始化示例数据（开发用，一键插入测试商品）
+ * GET /api/admin/init/demo
+ */
+router.get("/admin/init/demo", (req, res) => {
+    const demoGoods = [
+        { title: 'iPhone 15 Pro', price: 7999, image: 'https://placehold.co/400x400/e3f2fd/1565c0?text=iPhone+15+Pro', description: '苹果最新旗舰手机，A17 Pro芯片', stock: 50, category: 'phone' },
+        { title: '华为 Mate 60 Pro', price: 6999, image: 'https://placehold.co/400x400/fce4ec/c62828?text=Mate+60+Pro', description: '华为旗舰，麒麟芯片回归', stock: 30, category: 'phone' },
+        { title: '小米14 Ultra', price: 5999, image: 'https://placehold.co/400x400/fff3e0/ef6c00?text=Xiaomi+14', description: '徕卡影像旗舰', stock: 80, category: 'phone' },
+        { title: 'MacBook Pro 14', price: 14999, image: 'https://placehold.co/400x400/e8eaf6/3949ab?text=MacBook+Pro', description: 'M3 Pro芯片，专业级性能', stock: 20, category: 'computer' },
+        { title: '联想 ThinkPad X1', price: 9999, image: 'https://placehold.co/400x400/f3e5f5/7b1fa2?text=ThinkPad+X1', description: '商务办公首选', stock: 40, category: 'computer' },
+        { title: 'AirPods Pro 2', price: 1899, image: 'https://placehold.co/400x400/e8f5e9/2e7d32?text=AirPods+Pro', description: '主动降噪，空间音频', stock: 100, category: 'earphone' },
+        { title: '索尼 WH-1000XM5', price: 2499, image: 'https://placehold.co/400x400/fce4ec/c62828?text=Sony+XM5', description: '业界顶级降噪耳机', stock: 60, category: 'earphone' },
+        { title: '戴森吸尘器 V15', price: 4999, image: 'https://placehold.co/400x400/fff8e1/ff8f00?text=Dyson+V15', description: '强劲吸力，激光探测', stock: 25, category: 'appliance' },
+        { title: '优衣库羽绒服', price: 599, image: 'https://placehold.co/400x400/e3f2fd/1565c0?text=Down+Jacket', description: '轻薄保暖，多色可选', stock: 200, category: 'clothing' },
+        { title: '三只松鼠坚果礼盒', price: 168, image: 'https://placehold.co/400x400/f1f8e9/558b2f?text=Nut+Gift', description: '精选坚果，送礼佳品', stock: 300, category: 'food' },
+    ];
+
+    let success = 0;
+    let fail = 0;
+    const total = demoGoods.length;
+
+    demoGoods.forEach(item => {
+        const sql = "INSERT INTO goods (title, price, image, description, stock) VALUES (?,?,?,?,?)";
+        SQLConnect(sql, [item.title, item.price, item.image, item.description, item.stock], (result) => {
+            if (result.affectedRows > 0) {
+                success++;
+                SQLConnect("INSERT INTO category (cate, goods_id) VALUES (?,?)", [item.category, result.insertId], () => {});
+            } else {
+                fail++;
+            }
+            if (success + fail === total) {
+                res.send({ status: 200, msg: "示例数据初始化完成", data: { success, fail, total } });
+            }
+        });
+    });
+});
+
+
+
 
 
 module.exports = router;

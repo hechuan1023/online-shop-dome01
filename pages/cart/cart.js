@@ -25,7 +25,7 @@ Page({
           ...item,
           checked: true,
           quantity: item.quantity || 1,
-          image: item.image.startsWith('http') ? item.image : app.globalData.serverUrl + item.image
+          image: item.image ? (item.image.startsWith('http') ? item.image : app.globalData.serverUrl + item.image) : '/images/default-product.png'
         }));
         this.setData({ cartItems: items });
         this.loadImages(items);
@@ -84,7 +84,10 @@ Page({
     if (action === 'increase') {
       newQty += 1;
     } else if (action === 'decrease') {
-      if (newQty <= 1) return;
+      if (newQty <= 1) {
+        wx.showToast({ title: '数量不能少于1', icon: 'none', duration: 1000 });
+        return;
+      }
       newQty -= 1;
     }
 
@@ -99,7 +102,9 @@ Page({
       method: 'POST',
       data: { id: id, quantity: newQty },
       showLoading: false
-    }).catch(() => {});
+    }).catch(() => {
+      wx.showToast({ title: '更新失败', icon: 'none' });
+    });
   },
 
   deleteItem: function(e) {

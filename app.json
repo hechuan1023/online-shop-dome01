@@ -13,7 +13,8 @@
     "pages/order/order",
     "pages/order-detail/order-detail",
     "pages/pay-result/pay-result",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/customer-service/customer-service"
   ],
   "window": {
     "backgroundTextStyle": "light",
