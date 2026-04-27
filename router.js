@@ -3,6 +3,38 @@ const router = express.Router();
 const SQLConnect = require("./SQLConnect.js");
 const url = require("url");
 const request = require("request");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// 确保上传目录存在
+const uploadDir = path.join(__dirname, "public", "images", "goods");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// multer 配置
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, uploadDir);
+    },
+    filename: function(req, file, cb) {
+        const ext = path.extname(file.originalname) || ".jpg";
+        cb(null, "goods-" + Date.now() + "-" + Math.random().toString(36).substr(2, 6) + ext);
+    }
+});
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: function(req, file, cb) {
+        const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (allowed.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error("仅支持 jpg/png/gif/webp 格式"));
+        }
+    }
+});
 // const authorization_code = "itbaizhan"
 
 // const appid = "wxe4135ba344b525f4"
@@ -915,5 +947,21 @@ router.get("/admin/init/demo", (req, res) => {
 
 
 
+
+/**
+ * 图片上传接口
+ * POST /api/admin/goods/upload
+ * Content-Type: multipart/form-data
+ * Body: file
+ */
+router.post("/admin/goods/upload", upload.single("file"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send({ status: 400, msg: "请选择要上传的图片" });
+    }
+    const imageUrl = "/images/goods/" + req.file.filename;
+    res.send({ status: 200, msg: "上传成功", data: { url: imageUrl } });
+}, (err, req, res, next) => {
+    res.status(400).send({ status: 400, msg: err.message || "上传失败" });
+});
 
 module.exports = router;
