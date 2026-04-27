@@ -149,5 +149,9 @@ Page({
 
   contactService: function() {
     wx.navigateTo({ url: '/pages/customer-service/customer-service' });
+  },
+
+  goToAdminGoods: function() {
+    wx.navigateTo({ url: '/pages/admin-goods/admin-goods' });
   }
 });

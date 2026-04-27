@@ -14,7 +14,9 @@
     "pages/order-detail/order-detail",
     "pages/pay-result/pay-result",
     "pages/login/login",
-    "pages/customer-service/customer-service"
+    "pages/customer-service/customer-service",
+    "pages/admin-goods/admin-goods",
+    "pages/admin-goods-edit/admin-goods-edit"
   ],
   "window": {
     "backgroundTextStyle": "light",

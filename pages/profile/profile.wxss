@@ -353,3 +353,4 @@
 .icon-help { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
 .icon-about { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); }
 .icon-service { background: linear-gradient(135deg, #fff8e1, #ffecb3); }
+.icon-admin { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }

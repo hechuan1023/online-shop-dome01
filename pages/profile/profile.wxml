@@ -157,6 +157,12 @@
         </view>
         <text class="menu-text">关于我们</text>
       </view>
+      <view class="menu-item" bindtap="goToAdminGoods">
+        <view class="menu-icon-wrap icon-admin">
+          <text class="menu-icon">🛒</text>
+        </view>
+        <text class="menu-text">商品管理</text>
+      </view>
     </view>
   </view>
 </view>
