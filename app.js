@@ -1,7 +1,7 @@
 App({
   globalData: {
-    baseUrl: 'http://localhost:3001/api',
-    serverUrl: 'http://localhost:3001',
+    baseUrl: 'http://118.31.108.147/api',
+    serverUrl: 'http://118.31.108.147',
     userInfo: null,
     openid: null,
     token: null,
