@@ -55,22 +55,8 @@ Page({
                     setTimeout(() => { wx.navigateBack(); }, 800);
                   },
                   fail: () => {
-                    // 用户拒绝授权，用默认信息
-                    const userInfo = {
-                      nickName: '微信用户',
-                      avatarUrl: '/images/default-avatar.png',
-                      openid: data.openid,
-                      token: data.token
-                    };
-                    app.globalData.userInfo = userInfo;
-                    app.globalData.openid = data.openid;
-                    app.globalData.token = data.token;
-                    app.globalData.isLoggedIn = true;
-                    wx.setStorageSync('userInfo', userInfo);
-                    wx.setStorageSync('openid', data.openid);
-                    wx.setStorageSync('token', data.token);
-                    wx.showToast({ title: '登录成功', icon: 'success' });
-                    setTimeout(() => { wx.navigateBack(); }, 800);
+                    // 用户拒绝授权，提示需要授权
+                    wx.showToast({ title: '需要授权才能登录', icon: 'none' });
                   }
                 });
             } else {
