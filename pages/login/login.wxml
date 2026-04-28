@@ -9,9 +9,16 @@
   </view>
 
   <view class="login-section">
-    <button class="btn-wechat" bindtap="wechatLogin">
+    <!-- 第一步：微信登录按钮 -->
+    <button class="btn-wechat" wx:if="{{!hasUserInfo}}" bindtap="wechatLogin">
       <text class="btn-text">微信一键登录</text>
     </button>
+
+    <!-- 第二步：授权获取头像昵称按钮 -->
+    <button class="btn-wechat" wx:if="{{hasUserInfo}}" bindtap="getUserProfile">
+      <text class="btn-text">授权获取头像昵称</text>
+    </button>
+
     <text class="login-tip">登录后可享受完整购物服务</text>
   </view>
 </view>

@@ -355,24 +355,56 @@ router.get("/category", (req, res) => {
  */
 
 router.post("/login", (req, res) => {
-    // Mock 登录：直接返回模拟的 openid 和 token，不调用微信接口
-    const mockOpenid = "mock_openid_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-    const mockSessionKey = "mock_session_" + Date.now();
-    const token = "mock_token_" + mockOpenid + "_" + Date.now();
+    const { code } = req.body;
 
-    console.log("[Mock登录] openid =", mockOpenid);
-    console.log("[Mock登录] token  =", token);
+    if (!code) {
+        return res.status(400).send({ status: 400, msg: "缺少 code 参数" });
+    }
 
-    // 可选：存入数据库（如果 user 表存在的话）
-    const sql = "INSERT INTO user (openid, session_key) VALUES (?,?) ON DUPLICATE KEY UPDATE session_key = VALUES(session_key)";
-    SQLConnect(sql, [mockOpenid, mockSessionKey], (result) => {
-        console.log("[Mock登录] 数据库写入", result.affectedRows > 0 ? "成功" : "跳过");
-    });
+    // 调用微信 jscode2session 接口换取 openid 和 session_key
+    const config = require('../util/config');
+    const appId = config.mp.appId;
+    const appSecret = config.mp.appSecret;
+    const wechatUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + appSecret + "&js_code=" + code + "&grant_type=authorization_code";
 
-    res.send({
-        status: 200,
-        data: { openid: mockOpenid, token: token },
-        msg: "登录成功"
+    console.log("[登录] 请求微信接口，code:", code);
+
+    request.get(wechatUrl, function(err, response, body) {
+        if (err) {
+            console.error("[登录] 请求微信接口失败:", err);
+            return res.status(500).send({ status: 500, msg: "微信接口请求失败" });
+        }
+
+        try {
+            const data = JSON.parse(body);
+            console.log("[登录] 微信响应:", JSON.stringify(data));
+
+            if (data.errcode) {
+                console.error("[登录] 微信返回错误:", data.errcode, data.errmsg);
+                return res.status(401).send({ status: 401, msg: "登录失败: " + (data.errmsg || "code 无效") });
+            }
+
+            const openid = data.openid;
+            const sessionKey = data.session_key;
+
+            // 生成自定义 token
+            const token = openid + "_" + Date.now();
+
+            // 存入数据库
+            const sql = "INSERT INTO user (openid, session_key) VALUES (?,?) ON DUPLICATE KEY UPDATE session_key = VALUES(session_key)";
+            SQLConnect(sql, [openid, sessionKey], (result) => {
+                console.log("[登录] 用户 openid:", openid, "数据库写入", result.affectedRows > 0 ? "成功" : "更新");
+            });
+
+            res.send({
+                status: 200,
+                data: { openid: openid, token: token },
+                msg: "登录成功"
+            });
+        } catch (e) {
+            console.error("[登录] 解析微信响应失败:", e);
+            return res.status(500).send({ status: 500, msg: "服务器内部错误" });
+        }
     });
 })
 
