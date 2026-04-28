@@ -1,0 +1,34 @@
+<scroll-view 
+  class="virtual-scroll" 
+  scroll-y 
+  scroll-top="{{scrollTop}}" 
+  bindscroll="onScroll" 
+  style="height: 100%;"
+>
+  <view class="virtual-spacer-top" style="height: {{visibleStart * itemHeight}}px;"></view>
+  
+  <block wx:for="{{goodsList}}" wx:for-index="idx" wx:key="id">
+    <view 
+      wx:if="{{idx >= visibleStart && idx <= visibleEnd}}"
+      class="goods-item" 
+      style="height: {{itemHeight}}px;"
+      bindtap="onItemTap" 
+      data-index="{{idx}}"
+    >
+      <image 
+        class="goods-image" 
+        src="{{item[imageKey] || item[srcKey]}}" 
+        mode="aspectFill"
+      ></image>
+      <view class="goods-info">
+        <text class="goods-name">{{item.title}}</text>
+        <view class="goods-bottom">
+          <text class="goods-price">¥{{item.price}}</text>
+          <view wx:if="{{showActions}}" class="btn-add-cart" catchtap="onAddToCart" data-index="{{idx}}">+</view>
+        </view>
+      </view>
+    </view>
+  </block>
+  
+  <view class="virtual-spacer-bottom" style="height: {{(goodsList.length - 1 - visibleEnd) * itemHeight}}px;"></view>
+</scroll-view>
