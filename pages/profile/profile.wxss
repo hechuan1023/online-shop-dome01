@@ -2,7 +2,8 @@
 .container {
   background-color: #f7f8fa;
   min-height: 100vh;
-  padding-bottom: 40rpx;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ========== 头部用户信息 ========== */
@@ -44,8 +45,10 @@
   display: flex;
   align-items: center;
   flex: 1;
+  min-width: 0; /* 防止文字溢出 */
 }
 
+/* 头像区域 - 优化稳定布局 */
 .avatar-wrap {
   position: relative;
   width: 130rpx;
@@ -61,6 +64,7 @@
   top: 10rpx;
   left: 10rpx;
   z-index: 2;
+  background-color: #f5f5f5; /* 占位背景 */
 }
 
 .avatar-border {
@@ -95,12 +99,15 @@
   font-size: 18rpx;
   font-weight: bold;
   color: #8B4513;
+  line-height: 1;
 }
 
 .user-meta {
   margin-left: 24rpx;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0; /* 防止文字溢出 */
 }
 
 .username {
@@ -109,17 +116,26 @@
   color: #fff;
   margin-bottom: 12rpx;
   text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .user-tags {
   display: flex;
   gap: 12rpx;
+  flex-wrap: wrap;
 }
 
 .tag {
   font-size: 22rpx;
   padding: 4rpx 16rpx;
-  border-radius: 20rpx;
+  border-radius: 30rpx;
+  display: inline-block;
+  max-width: 200rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .tag-vip {
@@ -137,6 +153,7 @@
   display: flex;
   align-items: center;
   gap: 16rpx;
+  flex-shrink: 0;
 }
 
 .qrcode-icon {
@@ -161,8 +178,10 @@
   padding: 8rpx 20rpx;
   border-radius: 24rpx;
   font-size: 24rpx;
+  line-height: 1.5;
+  width: 125rpx;
+  max-width: 125rpx;
 }
-
 .btn-logout::after {
   border: none;
 }
@@ -184,6 +203,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 0;
 }
 
 .stats-num {
@@ -192,11 +212,19 @@
   color: #1a1a1a;
   margin-bottom: 8rpx;
   font-family: 'DIN Alternate', 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .stats-label {
   font-size: 24rpx;
   color: #666;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .stats-divider {
@@ -204,6 +232,7 @@
   height: 60rpx;
   background: linear-gradient(180deg, transparent, #eee, transparent);
   align-self: center;
+  flex-shrink: 0;
 }
 
 /* ========== 订单状态卡片 ========== */
@@ -226,12 +255,17 @@
   font-size: 32rpx;
   font-weight: bold;
   color: #1a1a1a;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
 .card-more {
   display: flex;
   align-items: center;
   gap: 4rpx;
+  flex-shrink: 0;
 }
 
 .more-text {
@@ -248,6 +282,7 @@
 .order-status-list {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap; /* 小屏自动换行 */
 }
 
 .status-item {
@@ -255,6 +290,7 @@
   flex-direction: column;
   align-items: center;
   flex: 1;
+  min-width: 0;
 }
 
 .status-icon-wrap {
@@ -273,28 +309,34 @@
 
 .badge {
   position: absolute;
-  top: -4rpx;
-  right: -4rpx;
+  top: -6rpx;
+  right: -10rpx;
   min-width: 32rpx;
   height: 32rpx;
   background: #e64340;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 8rpx;
+  padding: 0 6rpx;
   border: 2rpx solid #fff;
+  box-sizing: border-box;
 }
 
 .badge-text {
   font-size: 18rpx;
   color: #fff;
   font-weight: bold;
+  line-height: 1;
 }
 
 .status-label {
   font-size: 24rpx;
   color: #666;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* ========== 服务中心 ========== */
@@ -309,6 +351,7 @@
 .menu-grid {
   display: flex;
   flex-wrap: wrap;
+  margin: -10rpx 0;
 }
 
 .menu-item {
@@ -317,6 +360,8 @@
   flex-direction: column;
   align-items: center;
   padding: 20rpx 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .menu-icon-wrap {
@@ -339,8 +384,15 @@
 }
 
 .menu-text {
+  width: 100%;
+  text-align: center;
   font-size: 22rpx;
   color: #666;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 8rpx;
+  box-sizing: border-box;
 }
 
 /* 每个图标的背景色 */
@@ -353,3 +405,32 @@
 .icon-about { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); }
 .icon-service { background: linear-gradient(135deg, #fff8e1, #ffecb3); }
 .icon-admin { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+
+/* ========== 小屏适配 ========== */
+@media (max-width: 450px) {
+  .menu-item {
+    width: 33.33%; /* 改为3列，避免图标过挤 */
+  }
+  .stats-num {
+    font-size: 36rpx;
+  }
+  .status-icon-wrap {
+    width: 64rpx;
+    height: 64rpx;
+  }
+  .status-icon {
+    font-size: 40rpx;
+  }
+}
+
+@media (max-width: 360px) {
+  .menu-item {
+    width: 50%; /* 极小屏改为2列 */
+  }
+  .stats-num {
+    font-size: 32rpx;
+  }
+  .username {
+    font-size: 34rpx;
+  }
+}
