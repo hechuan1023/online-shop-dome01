@@ -1,7 +1,10 @@
+/* ========== 全局容器 ========== */
 .container {
   background-color: #f7f8fa;
   min-height: 100vh;
-  padding-bottom: 120rpx;
+  /* 底部留出空间，避免被固定栏遮挡，同时适配全面屏安全区 */
+  padding-bottom: calc(120rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
 }
 
 /* ========== 购物车列表 ========== */
@@ -26,10 +29,11 @@
   box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.06);
 }
 
+/* 复选框垂直居中，替代原来的 margin-top: 60rpx */
 .item-checkbox {
   margin-right: 16rpx;
-  margin-top: 60rpx;
   flex-shrink: 0;
+  align-self: center;  /* 关键修复：垂直居中，适应不同高度 */
   transform: scale(1.2);
 }
 
@@ -46,7 +50,7 @@
 
 .item-info {
   flex: 1;
-  min-width: 0;
+  min-width: 0;  /* 防止文字溢出 */
   display: flex;
   flex-direction: column;
 }
@@ -77,8 +81,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16rpx;
+  flex-wrap: wrap;
 }
 
+/* 数量控制组件 - 缩小按钮尺寸 */
 .quantity-control {
   display: flex;
   align-items: center;
@@ -89,17 +96,20 @@
 }
 
 .btn-quantity {
-  width: 56rpx;
-  height: 56rpx;
-  line-height: 56rpx;
+  width: 66rpx;   /* 原 56rpx */
+  height: 56rpx;  /* 原 56rpx */
+  max-width: 66rpx;
+  max-height: 56rpx;
+  line-height: 48rpx;
   text-align: center;
   background: linear-gradient(135deg, #f8f8f8, #e9e9e9);
-  font-size: 32rpx;
+  font-size: 28rpx; /* 原 32rpx */
   padding: 0;
   border: none;
   border-radius: 0;
   font-weight: bold;
   color: #2c3e50;
+  box-sizing: border-box;
 }
 
 .btn-quantity:active {
@@ -108,25 +118,27 @@
 
 .btn-quantity.disabled {
   color: #ccc;
+  background: #f5f5f5;
 }
 
 .quantity {
-  padding: 0 24rpx;
-  font-size: 28rpx;
-  min-width: 56rpx;
+  padding: 0 20rpx;   /* 原 24rpx */
+  font-size: 26rpx;
+  min-width: 48rpx;
   text-align: center;
   border-left: 1rpx solid #ddd;
   border-right: 1rpx solid #ddd;
   background: #fff;
   color: #2c3e50;
   font-weight: 500;
+  line-height: 48rpx; /* 与按钮高度一致 */
 }
 
 /* 删除按钮 */
 .btn-delete {
   font-size: 26rpx;
   color: #e74c3c;
-  padding: 12rpx 16rpx;
+  padding: 10rpx 16rpx;
   border-radius: 6rpx;
   background: rgba(231, 76, 60, 0.1);
   transition: all 0.3s ease;
@@ -174,6 +186,17 @@
   box-shadow: 0 2rpx 6rpx rgba(231, 76, 60, 0.3);
 }
 
+/* ========== 加载状态 ========== */
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 80rpx 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%23e74c3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 22v-4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M22 12h-4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>') no-repeat center top;
+  background-size: 48rpx;
+  padding-top: 60rpx;
+  background-position: center 20rpx;
+}
+
 /* ========== 底部结算栏 ========== */
 .cart-footer {
   position: fixed;
@@ -183,20 +206,25 @@
   background-color: #fff;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   border-top: 1rpx solid #eee;
   z-index: 100;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.03);
 }
 
 .select-all {
   display: flex;
   align-items: center;
   margin-right: 16rpx;
+  flex-shrink: 0;
 }
 
 .select-all text {
-  font-size: 24rpx;
-  margin-left: 6rpx;
+  font-size: 26rpx;
+  margin-left: 8rpx;
   color: #666;
 }
 
@@ -204,16 +232,17 @@
   flex: 1;
   text-align: right;
   margin-right: 16rpx;
+  min-width: 0;
 }
 
 .total-label {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #666;
 }
 
 .total-price {
-  font-size: 34rpx;
-  color: #e64340;
+  font-size: 36rpx;
+  color: #e74c3c;
   font-weight: bold;
 }
 
@@ -221,15 +250,55 @@
   background: linear-gradient(135deg, #e74c3c, #ff6b6b);
   color: #fff;
   border: none;
-  padding: 20rpx 48rpx;
+  padding: 18rpx 40rpx;
   border-radius: 40rpx;
-  font-size: 30rpx;
+  font-size: 28rpx;
   font-weight: bold;
   box-shadow: 0 4rpx 12rpx rgba(231, 76, 60, 0.3);
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .btn-checkout:active {
   transform: translateY(2rpx);
   box-shadow: 0 2rpx 6rpx rgba(231, 76, 60, 0.3);
+}
+
+/* ========== 小屏适配 ========== */
+@media (max-width: 360px) {
+  .cart-item {
+    padding: 16rpx;
+  }
+  .item-image {
+    width: 120rpx;
+    height: 120rpx;
+  }
+  .item-name {
+    font-size: 26rpx;
+  }
+  .item-price {
+    font-size: 30rpx;
+  }
+  .btn-quantity {
+    width: 44rpx;
+    height: 44rpx;
+    line-height: 44rpx;
+    font-size: 26rpx;
+  }
+  .quantity {
+    padding: 0 12rpx;
+    max-width: 400rpx;
+    line-height: 44rpx;
+  }
+  .btn-delete {
+    font-size: 24rpx;
+    padding: 8rpx 12rpx;
+  }
+  .total-price {
+    font-size: 32rpx;
+  }
+  .btn-checkout {
+    padding: 14rpx 32rpx;
+    font-size: 26rpx;
+  }
 }
