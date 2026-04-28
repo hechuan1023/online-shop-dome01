@@ -1,23 +1,37 @@
 <view class="container">
+  <!-- 顶部标签栏 -->
   <view class="tabs">
     <block wx:for="{{tabs}}" wx:key="key">
-      <view class="tab-item {{currentTab === item.key ? 'active' : ''}}"
-            bindtap="switchTab" data-key="{{item.key}}">
+      <view 
+        class="tab-item {{currentTab === item.key ? 'active' : ''}}"
+        bindtap="switchTab" 
+        data-key="{{item.key}}"
+        hover-class="tab-hover"
+      >
         <text>{{item.name}}</text>
       </view>
     </block>
   </view>
 
-  <view class="order-list" wx:if="{{orders.length > 0}}">
-    <block wx:for="{{orders}}" wx:key="id">
+  <!-- 订单列表 -->
+  <view class="order-list" wx:if="{{!loading && orders.length > 0}}">
+    <block wx:for="{{orders}}" wx:key="order_no">
       <view class="order-card" bindtap="goToDetail" data-no="{{item.order_no}}">
+        <!-- 订单头部：订单号 + 状态 -->
         <view class="order-header">
           <text class="order-no">订单号：{{item.order_no}}</text>
           <text class="order-status status-{{item.status}}">{{item.statusText}}</text>
         </view>
-        <block wx:for="{{item.items}}" wx:for-item="goods" wx:key="id">
+
+        <!-- 商品列表 -->
+        <block wx:for="{{item.items}}" wx:for-item="goods" wx:key="goods.id">
           <view class="order-goods">
-            <image class="goods-image" src="{{goods.localImage || goods.image}}" mode="aspectFill"></image>
+            <image 
+              class="goods-image" 
+              src="{{goods.localImage || goods.image}}" 
+              mode="aspectFill"
+              lazy-load="true"
+            ></image>
             <view class="goods-info">
               <text class="goods-name">{{goods.title}}</text>
               <view class="goods-bottom">
@@ -27,8 +41,13 @@
             </view>
           </view>
         </block>
+
+        <!-- 订单底部：合计 + 操作按钮 -->
         <view class="order-footer">
-          <text class="order-total">共{{item.items.length}}件 合计：<text class="price">¥{{item.pay_amount}}</text></text>
+          <text class="order-total">
+            共{{item.items.length}}件 合计：
+            <text class="price">¥{{item.pay_amount}}</text>
+          </text>
           <view class="order-actions">
             <button class="btn-action" wx:if="{{item.status === 0}}" catchtap="cancelOrder" data-no="{{item.order_no}}">取消</button>
             <button class="btn-action primary" wx:if="{{item.status === 0}}" catchtap="payOrder" data-no="{{item.order_no}}">去付款</button>
@@ -40,10 +59,14 @@
     </block>
   </view>
 
+  <!-- 空状态 -->
   <view class="empty-tip" wx:if="{{!loading && orders.length === 0}}">
     <text class="empty-icon">📦</text>
     <text class="empty-text">暂无订单</text>
   </view>
 
-  <view class="loading" wx:if="{{loading}}"></view>
+  <!-- 加载动画 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
 </view>
