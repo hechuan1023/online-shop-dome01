@@ -9,34 +9,6 @@ Page({
 
   onLoad: function(options) {
     this.redirectUrl = options.redirect || '/pages/index/index';
-    this.checkLogin();
-  },
-
-  onShow: function() {
-    this.checkLogin();
-  },
-
-  // 检查登录态
-  checkLogin: function() {
-    var that = this;
-    wx.checkSession({
-      success: function() {
-        // session_key 有效，检查本地是否有 token
-        var token = wx.getStorageSync('user_token');
-        var openid = wx.getStorageSync('user_openid');
-        if (token && openid) {
-          app.globalData.isLoggedIn = true;
-          app.globalData.openid = openid;
-          app.globalData.token = token;
-          // 已登录，直接跳转
-          wx.navigateBack();
-        }
-      },
-      fail: function() {
-        // session_key 过期，需要重新登录
-        app.globalData.isLoggedIn = false;
-      }
-    });
   },
 
   // 第一步：微信登录，获取 code 换 token
