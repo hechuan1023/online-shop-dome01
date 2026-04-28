@@ -66,17 +66,15 @@
 }
 
 .product-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
 }
 
 .product-item {
-  width: 48%;
   background-color: #fff;
   border-radius: 12rpx;
   padding: 20rpx;
-  margin-bottom: 20rpx;
 }
 
 .product-image {
