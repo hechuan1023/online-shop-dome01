@@ -8,23 +8,25 @@ Page({
     loading: true,
     reviews: [],
     cartCount: 0,
-    isFavorite: false
+    isFavorite: false,
+    detailContent: []
   },
 
-  onLoad: function (options) {
+  onLoad: function(options) {
     const id = options.id;
     this.setData({ productId: id });
     this.loadProductDetail(id);
     this.loadReviews(id);
     this.loadCartCount();
     this.checkFavorite(id);
+    this.loadDetailContent(id);
   },
 
-  onShow: function () {
+  onShow: function() {
     this.loadCartCount();
   },
 
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
     const product = this.data.product;
     return {
       title: product ? product.title : '商品详情',
@@ -32,7 +34,7 @@ Page({
     };
   },
 
-  loadProductDetail: function (id) {
+  loadProductDetail: function(id) {
     this.setData({ loading: true });
     request({
       url: '/buy',
@@ -57,7 +59,7 @@ Page({
     });
   },
 
-  loadProductImages: function (id, product) {
+  loadProductImages: function(id, product) {
     request({
       url: '/goods/images',
       data: { goods_id: id },
@@ -89,7 +91,7 @@ Page({
     });
   },
 
-  loadReviews: function (id) {
+  loadReviews: function(id) {
     request({
       url: '/goods/reviews',
       data: { goods_id: id },
@@ -98,10 +100,10 @@ Page({
       if (res.status === 200) {
         this.setData({ reviews: res.data || [] });
       }
-    }).catch(() => { });
+    }).catch(() => {});
   },
 
-  loadCartCount: function () {
+  loadCartCount: function() {
     request({
       url: '/cart/list',
       showLoading: false
@@ -111,10 +113,23 @@ Page({
         const count = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
         this.setData({ cartCount: count });
       }
-    }).catch(() => { });
+    }).catch(() => {});
   },
 
-  previewImage: function (e) {
+  // 加载图文详情
+  loadDetailContent: function(id) {
+    request({
+      url: '/goods/detail-content',
+      data: { goods_id: id },
+      showLoading: false
+    }).then(res => {
+      if (res.status === 200) {
+        this.setData({ detailContent: res.data || [] });
+      }
+    }).catch(() => {});
+  },
+
+  previewImage: function(e) {
     const url = e.currentTarget.dataset.url;
     const urls = this.data.product.images.map(img => img.image);
     wx.previewImage({
@@ -123,7 +138,19 @@ Page({
     });
   },
 
-  addToCart: function () {
+  // 预览图文详情中的图片
+  previewDetailImage: function(e) {
+    const url = e.currentTarget.dataset.url;
+    const imageUrls = this.data.detailContent
+      .filter(item => item.type === 'image')
+      .map(item => item.value);
+    wx.previewImage({
+      current: url,
+      urls: imageUrls.length > 0 ? imageUrls : [url]
+    });
+  },
+
+  addToCart: function() {
     const product = this.data.product;
     if (!product) return;
     request({
@@ -145,7 +172,7 @@ Page({
     });
   },
 
-  buyNow: function () {
+  buyNow: function() {
     const product = this.data.product;
     if (!product) return;
     this.addToCart();
@@ -154,19 +181,19 @@ Page({
     }, 1000);
   },
 
-  goToCart: function () {
+  goToCart: function() {
     wx.switchTab({ url: '/pages/cart/cart' });
   },
 
-  goToHome: function () {
+  goToHome: function() {
     wx.switchTab({ url: '/pages/index/index' });
   },
 
-  contactService: function () {
+  contactService: function() {
     wx.navigateTo({ url: '/pages/customer-service/customer-service' });
   },
 
-  checkFavorite: function (goodsId) {
+  checkFavorite: function(goodsId) {
     request({
       url: '/favorite/check',
       data: { goods_id: goodsId },
@@ -175,10 +202,10 @@ Page({
       if (res.status === 200) {
         this.setData({ isFavorite: res.data.isFavorite });
       }
-    }).catch(() => { });
+    }).catch(() => {});
   },
 
-  toggleFavorite: function () {
+  toggleFavorite: function() {
     if (this.data.isFavorite) {
       this.removeFavorite();
     } else {
@@ -186,7 +213,7 @@ Page({
     }
   },
 
-  addFavorite: function () {
+  addFavorite: function() {
     request({
       url: '/favorite/add',
       method: 'POST',
@@ -202,7 +229,7 @@ Page({
     });
   },
 
-  removeFavorite: function () {
+  removeFavorite: function() {
     wx.showModal({
       title: '提示',
       content: '确定要取消收藏吗？',

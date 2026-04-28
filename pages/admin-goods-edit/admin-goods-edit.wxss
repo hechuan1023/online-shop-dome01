@@ -349,3 +349,183 @@
   font-size: 32rpx;
   font-weight: bold;
 }
+
+/* ========== 多图上传 ========== */
+.multi-image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.multi-image-item {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.multi-image-img {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 12rpx;
+  background: #f0f0f0;
+}
+
+.btn-remove-multi {
+  position: absolute;
+  top: -12rpx;
+  right: -12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.btn-remove-multi text {
+  color: #fff;
+  font-size: 24rpx;
+}
+
+.multi-image-order {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 20rpx;
+  text-align: center;
+  padding: 4rpx 0;
+  border-radius: 0 0 12rpx 12rpx;
+}
+
+.btn-add-multi-image {
+  width: 200rpx;
+  height: 200rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+}
+
+.add-icon {
+  font-size: 48rpx;
+  color: #ccc;
+  margin-bottom: 4rpx;
+}
+
+.add-text {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.add-count {
+  font-size: 20rpx;
+  color: #bbb;
+  margin-top: 4rpx;
+}
+
+/* ========== 图文详情编辑 ========== */
+.detail-content-list {
+  margin-bottom: 20rpx;
+}
+
+.detail-content-item {
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+}
+
+.detail-content-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 16rpx;
+  background: #eee;
+}
+
+.detail-content-num {
+  font-size: 22rpx;
+  color: #999;
+  font-weight: bold;
+}
+
+.detail-content-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn-move-up,
+.btn-move-down,
+.btn-remove-content {
+  font-size: 24rpx;
+  color: #666;
+  padding: 4rpx 12rpx;
+  background: #ddd;
+  border-radius: 6rpx;
+}
+
+.btn-remove-content {
+  color: #e64340;
+}
+
+.detail-text-input {
+  font-size: 26rpx;
+  color: #333;
+  padding: 16rpx;
+  min-height: 120rpx;
+  width: 100%;
+  background: transparent;
+}
+
+.detail-image-wrap {
+  padding: 16rpx;
+}
+
+.detail-image-preview {
+  width: 100%;
+  max-height: 400rpx;
+  border-radius: 8rpx;
+  background: #f0f0f0;
+}
+
+.detail-add-btns {
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn-add-text,
+.btn-add-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 20rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
+
+.btn-add-text:active,
+.btn-add-image:active {
+  background: #f0f0f0;
+}
+
+.btn-add-icon {
+  font-size: 28rpx;
+}
+
+.btn-add-text text:last-child,
+.btn-add-image text:last-child {
+  font-size: 24rpx;
+  color: #666;
+}

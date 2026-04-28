@@ -9,25 +9,49 @@
   </view>
 
   <scroll-view class="form-scroll" scroll-y>
-    <!-- 商品图片 -->
+    <!-- 商品主图 -->
     <view class="form-card">
       <view class="card-label">
-        <text class="label-text">商品图片</text>
-        <text class="label-hint">建议尺寸 1:1</text>
+        <text class="label-text">商品主图</text>
+        <text class="label-hint">建议尺寸 1:1，第一张为封面图</text>
       </view>
       <view class="image-upload-wrap">
-        <view class="image-preview" wx:if="{{imageUrl}}">
-          <image class="preview-img" src="{{imageUrl}}" mode="aspectFill" bindtap="previewImage"></image>
-          <view class="btn-remove-image" catchtap="removeImage">
+        <view class="image-preview" wx:if="{{form.image}}">
+          <image class="preview-img" src="{{form.image}}" mode="aspectFill" bindtap="previewMainImage"></image>
+          <view class="btn-remove-image" catchtap="removeMainImage">
             <text>✕</text>
           </view>
         </view>
-        <view class="btn-choose-image" bindtap="chooseImage" wx:if="{{!imageUrl}}">
+        <view class="btn-choose-image" bindtap="chooseMainImage" wx:if="{{!form.image}}">
           <text class="choose-icon">📷</text>
-          <text class="choose-text">{{uploading ? '上传中...' : '点击上传图片'}}</text>
+          <text class="choose-text">{{uploading ? '上传中...' : '点击上传主图'}}</text>
         </view>
       </view>
-      <input class="form-input image-url-input" placeholder="或手动输入图片链接" value="{{form.image}}" bindinput="onImageInput" />
+      <input class="form-input image-url-input" placeholder="或手动输入主图链接" value="{{form.image}}" bindinput="onMainImageInput" />
+    </view>
+
+    <!-- 商品多图（轮播图） -->
+    <view class="form-card">
+      <view class="card-label">
+        <text class="label-text">商品轮播图</text>
+        <text class="label-hint">可上传多张，用于商品详情页轮播展示</text>
+      </view>
+      <view class="multi-image-list">
+        <block wx:for="{{detailImages}}" wx:key="id">
+          <view class="multi-image-item">
+            <image class="multi-image-img" src="{{item.url}}" mode="aspectFill" bindtap="previewDetailImage" data-index="{{index}}"></image>
+            <view class="btn-remove-multi" catchtap="removeDetailImage" data-index="{{index}}">
+              <text>✕</text>
+            </view>
+            <text class="multi-image-order">{{index + 1}}</text>
+          </view>
+        </block>
+        <view class="btn-add-multi-image" bindtap="chooseDetailImages" wx:if="{{detailImages.length < 9}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+          <text class="add-count">{{detailImages.length}}/9</text>
+        </view>
+      </view>
     </view>
 
     <!-- 基本信息 -->
@@ -73,6 +97,42 @@
       <view class="form-item form-item-no-border">
         <textarea class="form-textarea" placeholder="请输入商品描述（选填）" value="{{form.description}}" bindinput="onDescInput" maxlength="500" auto-height></textarea>
         <text class="textarea-counter">{{form.description.length || 0}}/500</text>
+      </view>
+    </view>
+
+    <!-- 商品详情图文 -->
+    <view class="form-card">
+      <view class="card-title">商品详情图文</view>
+      <view class="card-label">
+        <text class="label-hint">可添加文字段落和图片，仿京东商品详情样式</text>
+      </view>
+      <view class="detail-content-list">
+        <block wx:for="{{detailContent}}" wx:key="id">
+          <view class="detail-content-item">
+            <view class="detail-content-toolbar">
+              <text class="detail-content-num">{{index + 1}}</text>
+              <view class="detail-content-actions">
+                <text class="btn-move-up" catchtap="moveContentUp" data-index="{{index}}" wx:if="{{index > 0}}">↑</text>
+                <text class="btn-move-down" catchtap="moveContentDown" data-index="{{index}}" wx:if="{{index < detailContent.length - 1}}">↓</text>
+                <text class="btn-remove-content" catchtap="removeContent" data-index="{{index}}">✕</text>
+              </view>
+            </view>
+            <textarea class="detail-text-input" wx:if="{{item.type === 'text'}}" placeholder="请输入文字内容..." value="{{item.value}}" bindinput="onDetailTextInput" data-index="{{index}}" maxlength="1000" auto-height></textarea>
+            <view class="detail-image-wrap" wx:if="{{item.type === 'image'}}">
+              <image class="detail-image-preview" src="{{item.value}}" mode="aspectFill" bindtap="previewContentImage" data-index="{{index}}"></image>
+            </view>
+          </view>
+        </block>
+      </view>
+      <view class="detail-add-btns">
+        <view class="btn-add-text" bindtap="addDetailText">
+          <text class="btn-add-icon">📝</text>
+          <text>添加文字</text>
+        </view>
+        <view class="btn-add-image" bindtap="addDetailImage">
+          <text class="btn-add-icon">🖼️</text>
+          <text>添加图片</text>
+        </view>
       </view>
     </view>
 
