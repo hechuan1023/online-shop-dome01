@@ -54,11 +54,11 @@ Page({
 
   toggleCheck: function(e) {
     const id = e.currentTarget.dataset.id;
-    const cartItems = this.data.cartItems;
+    const cartItems = [...this.data.cartItems];
     const index = cartItems.findIndex(item => item.id === id);
     if (index !== -1) {
       cartItems[index].checked = !cartItems[index].checked;
-      this.setData({ cartItems: cartItems });
+      this.setData({ cartItems });
       this.calculateTotal();
     }
   },
@@ -69,14 +69,15 @@ Page({
       item.checked = allChecked;
       return item;
     });
-    this.setData({ cartItems: cartItems, allChecked: allChecked });
+    this.setData({ cartItems, allChecked });
     this.calculateTotal();
   },
 
+  // 加减按钮修改数量
   changeQuantity: function(e) {
     const id = e.currentTarget.dataset.id;
     const action = e.currentTarget.dataset.action;
-    const cartItems = this.data.cartItems;
+    const cartItems = [...this.data.cartItems];
     const index = cartItems.findIndex(item => item.id === id);
     if (index === -1) return;
 
@@ -91,12 +92,62 @@ Page({
       newQty -= 1;
     }
 
-    // 先更新本地
     cartItems[index].quantity = newQty;
-    this.setData({ cartItems: cartItems });
+    this.setData({ cartItems });
     this.calculateTotal();
+    this.updateQuantityOnServer(id, newQty);
+  },
 
-    // 同步到后端
+  // 手动输入 - 实时输入（防抖 + 负数/0校验）
+  onQuantityInput: function(e) {
+    const id = e.currentTarget.dataset.id;
+    let rawValue = e.detail.value;
+    let newQty = parseInt(rawValue, 10);
+    
+    if (isNaN(newQty) || newQty <= 0) {
+      wx.showToast({ title: '数量不能少于1', icon: 'none', duration: 1500 });
+      newQty = 1;
+    }
+    if (newQty < 1) newQty = 1;
+    
+    const cartItems = [...this.data.cartItems];
+    const index = cartItems.findIndex(item => item.id === id);
+    if (index !== -1 && cartItems[index].quantity !== newQty) {
+      cartItems[index].quantity = newQty;
+      this.setData({ cartItems });
+      this.calculateTotal();
+      
+      if (this.inputTimer) clearTimeout(this.inputTimer);
+      this.inputTimer = setTimeout(() => {
+        this.updateQuantityOnServer(id, newQty);
+      }, 500);
+    }
+  },
+
+  // 手动输入 - 失去焦点最终确认（同样校验负数/0）
+  onQuantityBlur: function(e) {
+    const id = e.currentTarget.dataset.id;
+    let rawValue = e.detail.value;
+    let newQty = parseInt(rawValue, 10);
+    
+    if (isNaN(newQty) || newQty <= 0) {
+      wx.showToast({ title: '数量不能少于1', icon: 'none', duration: 1500 });
+      newQty = 1;
+    }
+    if (newQty < 1) newQty = 1;
+    
+    const cartItems = [...this.data.cartItems];
+    const index = cartItems.findIndex(item => item.id === id);
+    if (index !== -1 && cartItems[index].quantity !== newQty) {
+      cartItems[index].quantity = newQty;
+      this.setData({ cartItems });
+      this.calculateTotal();
+      this.updateQuantityOnServer(id, newQty);
+    }
+  },
+
+  // 统一后端更新数量
+  updateQuantityOnServer: function(id, newQty) {
     request({
       url: '/cart/update',
       method: 'POST',
@@ -104,6 +155,7 @@ Page({
       showLoading: false
     }).catch(() => {
       wx.showToast({ title: '更新失败', icon: 'none' });
+      this.loadCartData();
     });
   },
 
@@ -140,16 +192,15 @@ Page({
     let allChecked = true;
     cartItems.forEach(item => {
       if (item.checked) {
-        totalPrice += item.price * 100 * item.quantity;
+        totalPrice += item.price * item.quantity;
         checkedCount += 1;
       } else {
         allChecked = false;
       }
     });
-    totalPrice = totalPrice / 100
     this.setData({
       totalPrice: totalPrice.toFixed(2),
-      checkedCount: checkedCount,
+      checkedCount,
       allChecked: cartItems.length > 0 ? allChecked : false
     });
   },
