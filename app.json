@@ -16,7 +16,8 @@
     "pages/login/login",
     "pages/customer-service/customer-service",
     "pages/admin-goods/admin-goods",
-    "pages/admin-goods-edit/admin-goods-edit"
+    "pages/admin-goods-edit/admin-goods-edit",
+    "pages/favorites/favorites"
   ],
   "window": {
     "backgroundTextStyle": "light",
