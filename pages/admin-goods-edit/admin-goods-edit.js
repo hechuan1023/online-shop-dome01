@@ -233,8 +233,10 @@ Page({
       success: (res) => {
         try {
           const data = JSON.parse(res.data);
+          console.log('[上传返回]', type, index, JSON.stringify(data));
           if (data.status === 200) {
             const fullUrl = data.data.url.startsWith('http') ? data.data.url : app.globalData.serverUrl + data.data.url;
+            console.log('[上传成功]', type, index, fullUrl);
             if (type === 'main') {
               that.setData({ 'form.image': fullUrl });
             } else if (type === 'detail') {
@@ -251,6 +253,7 @@ Page({
             that.clearUploadingFlag(type, index);
           }
         } catch (e) {
+          console.log('[上传解析失败]', e, res.data);
           wx.showToast({ title: '上传失败', icon: 'none' });
           that.clearUploadingFlag(type, index);
         }
@@ -384,6 +387,7 @@ Page({
         value: item.value
       }))
     };
+    console.log('[保存商品]', JSON.stringify(saveData));
 
     const url = this.data.isEdit ? '/admin/goods/update' : '/admin/goods/add';
 
