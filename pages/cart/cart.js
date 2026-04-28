@@ -205,6 +205,13 @@ Page({
     });
   },
 
+  goToDetail: function(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/product-detail/product-detail?id=' + id
+    });
+  },
+
   goShopping: function() {
     wx.switchTab({ url: '/pages/index/index' });
   },
