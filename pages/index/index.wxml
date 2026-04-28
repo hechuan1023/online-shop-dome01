@@ -52,4 +52,9 @@
     <text class="cart-toast-icon">✓</text>
     <text class="cart-toast-text">{{cartToastMsg}}</text>
   </view>
+
+  <!-- 返回顶部按钮 -->
+  <view class="back-to-top {{showBackToTop ? 'show' : ''}}" bindtap="scrollToTop">
+    <text class="back-to-top-icon">↑</text>
+  </view>
 </view>
