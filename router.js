@@ -639,8 +639,6 @@ router.post("/pay/create", (req, res) => {
     })
 })
 // ============ 智能客服 API ============
-<<<<<<< HEAD
-=======
 
 /**
  * 知识库 - 关键词匹配回复
@@ -956,7 +954,7 @@ router.get("/admin/init/demo", (req, res) => {
 
 
 
->>>>>>> 0695bfe66710f2e6a0d6bd0f58e77e87ee42998c
+ 0695bfe66710f2e6a0d6bd0f58e77e87ee42998c
 
 /**
  * 知识库 - 关键词匹配回复
