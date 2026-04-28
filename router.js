@@ -330,7 +330,7 @@ router.get("/buy", (req, res) => {
 /**
  * 类别
  */
-trouter.get("/category", (req, res) => {
+router.get("/category", (req, res) => {
 	    var tag = url.parse(req.url, true).query.tag;
 	    // 联表查询：根据分类 tag 查出所有关联商品的完整信息
 	    const sql = "SELECT g.* FROM goods g INNER JOIN category c ON g.id = c.goods_id WHERE c.cate = ? ORDER BY g.create_time DESC";
