@@ -7,22 +7,24 @@ Page({
     productId: null,
     loading: true,
     reviews: [],
-    cartCount: 0
+    cartCount: 0,
+    isFavorite: false
   },
 
-  onLoad: function(options) {
+  onLoad: function (options) {
     const id = options.id;
     this.setData({ productId: id });
     this.loadProductDetail(id);
     this.loadReviews(id);
     this.loadCartCount();
+    this.checkFavorite(id);
   },
 
-  onShow: function() {
+  onShow: function () {
     this.loadCartCount();
   },
 
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
     const product = this.data.product;
     return {
       title: product ? product.title : '商品详情',
@@ -30,7 +32,7 @@ Page({
     };
   },
 
-  loadProductDetail: function(id) {
+  loadProductDetail: function (id) {
     this.setData({ loading: true });
     request({
       url: '/buy',
@@ -55,7 +57,7 @@ Page({
     });
   },
 
-  loadProductImages: function(id, product) {
+  loadProductImages: function (id, product) {
     request({
       url: '/goods/images',
       data: { goods_id: id },
@@ -87,7 +89,7 @@ Page({
     });
   },
 
-  loadReviews: function(id) {
+  loadReviews: function (id) {
     request({
       url: '/goods/reviews',
       data: { goods_id: id },
@@ -96,10 +98,10 @@ Page({
       if (res.status === 200) {
         this.setData({ reviews: res.data || [] });
       }
-    }).catch(() => {});
+    }).catch(() => { });
   },
 
-  loadCartCount: function() {
+  loadCartCount: function () {
     request({
       url: '/cart/list',
       showLoading: false
@@ -109,10 +111,10 @@ Page({
         const count = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
         this.setData({ cartCount: count });
       }
-    }).catch(() => {});
+    }).catch(() => { });
   },
 
-  previewImage: function(e) {
+  previewImage: function (e) {
     const url = e.currentTarget.dataset.url;
     const urls = this.data.product.images.map(img => img.image);
     wx.previewImage({
@@ -121,7 +123,7 @@ Page({
     });
   },
 
-  addToCart: function() {
+  addToCart: function () {
     const product = this.data.product;
     if (!product) return;
     request({
@@ -143,7 +145,7 @@ Page({
     });
   },
 
-  buyNow: function() {
+  buyNow: function () {
     const product = this.data.product;
     if (!product) return;
     this.addToCart();
@@ -152,15 +154,73 @@ Page({
     }, 1000);
   },
 
-  goToCart: function() {
+  goToCart: function () {
     wx.switchTab({ url: '/pages/cart/cart' });
   },
 
-  goToHome: function() {
+  goToHome: function () {
     wx.switchTab({ url: '/pages/index/index' });
   },
 
-  contactService: function() {
+  contactService: function () {
     wx.navigateTo({ url: '/pages/customer-service/customer-service' });
+  },
+
+  checkFavorite: function (goodsId) {
+    request({
+      url: '/favorite/check',
+      data: { goods_id: goodsId },
+      showLoading: false
+    }).then(res => {
+      if (res.status === 200) {
+        this.setData({ isFavorite: res.data.isFavorite });
+      }
+    }).catch(() => { });
+  },
+
+  toggleFavorite: function () {
+    if (this.data.isFavorite) {
+      this.removeFavorite();
+    } else {
+      this.addFavorite();
+    }
+  },
+
+  addFavorite: function () {
+    request({
+      url: '/favorite/add',
+      method: 'POST',
+      data: { goods_id: this.data.productId },
+      showLoading: false
+    }).then(res => {
+      if (res.status === 200) {
+        this.setData({ isFavorite: true });
+        wx.showToast({ title: '收藏成功', icon: 'success' });
+      }
+    }).catch(() => {
+      wx.showToast({ title: '收藏失败', icon: 'none' });
+    });
+  },
+
+  removeFavorite: function () {
+    wx.showModal({
+      title: '提示',
+      content: '确定要取消收藏吗？',
+      success: (res) => {
+        if (res.confirm) {
+          request({
+            url: '/favorite/remove',
+            method: 'POST',
+            data: { goods_id: this.data.productId },
+            showLoading: false
+          }).then(() => {
+            this.setData({ isFavorite: false });
+            wx.showToast({ title: '已取消收藏', icon: 'success' });
+          }).catch(() => {
+            wx.showToast({ title: '取消失败', icon: 'none' });
+          });
+        }
+      }
+    });
   }
 });
