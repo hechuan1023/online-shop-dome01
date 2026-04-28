@@ -1,0 +1,47 @@
+<view class="container">
+  <view class="page-header">
+    <text class="header-title">我的收藏</text>
+    <text class="header-count" wx:if="{{!editMode && favorites.length > 0}}">共 {{favorites.length}} 件</text>
+    <view class="header-actions" wx:if="{{favorites.length > 0}}">
+      <text class="action-btn" bindtap="toggleEditMode">{{editMode ? '取消' : '管理'}}</text>
+    </view>
+  </view>
+
+  <view class="favorites-list">
+    <block wx:for="{{favorites}}" wx:key="id">
+      <view class="favorite-item" bindtap="goToProductDetail" data-id="{{item.goods_id}}">
+        <view class="item-select" wx:if="{{editMode}}" catchtap="toggleSelectItem" data-index="{{index}}">
+          <text class="checkbox {{item.selected ? 'checked' : ''}}">{{item.selected ? '✓' : ''}}</text>
+        </view>
+        <image class="item-image" src="{{item.image}}" mode="aspectFill" lazy-load></image>
+        <view class="item-info">
+          <text class="item-name">{{item.title}}</text>
+          <text class="item-price">¥{{item.price}}</text>
+        </view>
+        <view class="item-actions" wx:if="{{editMode}}" catchtap="removeItem" data-id="{{item.goods_id}}">
+          <text class="btn-remove">删除</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="edit-bar" wx:if="{{editMode && favorites.length > 0}}">
+    <view class="bar-left">
+      <text class="bar-btn" bindtap="selectAll">全选</text>
+      <text class="bar-btn" bindtap="deselectAll">全不选</text>
+    </view>
+    <view class="bar-right">
+      <text class="bar-btn bar-btn-remove" bindtap="batchRemove">取消收藏</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <view class="empty-tip" wx:if="{{empty && !loading}}">
+    <text class="empty-icon">❤</text>
+    <text class="empty-text">暂无收藏商品</text>
+    <navigator url="/pages/products/products" class="empty-link">去逛逛</navigator>
+  </view>
+</view>
