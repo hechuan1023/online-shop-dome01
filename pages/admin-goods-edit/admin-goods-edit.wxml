@@ -1,63 +1,90 @@
 <view class="edit-container">
-  <!-- 顶部标题 -->
+  <!-- 顶部标题栏 -->
   <view class="edit-header">
+    <view class="header-back" bindtap="goBack">
+      <text class="back-icon">‹</text>
+    </view>
     <text class="edit-title">{{isEdit ? '编辑商品' : '添加商品'}}</text>
+    <view class="header-placeholder"></view>
   </view>
 
-  <view class="form-section">
-    <!-- 商品名称 -->
-    <view class="form-item">
-      <text class="form-label">商品名称 <text class="required">*</text></text>
-      <input class="form-input" placeholder="请输入商品名称" value="{{form.title}}" bindinput="onTitleInput" maxlength="100" />
-    </view>
-
-    <!-- 商品价格 -->
-    <view class="form-item">
-      <text class="form-label">商品价格 <text class="required">*</text></text>
-      <input class="form-input" type="digit" placeholder="请输入价格，如 99.99" value="{{form.price}}" bindinput="onPriceInput" />
-    </view>
-
+  <scroll-view class="form-scroll" scroll-y>
     <!-- 商品图片 -->
-    <view class="form-item">
-      <text class="form-label">商品图片</text>
-      <view class="image-upload-area">
-        <view class="image-preview" wx:if="{{imageUrl}}" bindtap="previewImage">
-          <image class="preview-img" src="{{imageUrl}}" mode="aspectFill"></image>
-          <view class="btn-remove-image" catchtap="removeImage">✕</view>
+    <view class="form-card">
+      <view class="card-label">
+        <text class="label-text">商品图片</text>
+        <text class="label-hint">建议尺寸 1:1</text>
+      </view>
+      <view class="image-upload-wrap">
+        <view class="image-preview" wx:if="{{imageUrl}}">
+          <image class="preview-img" src="{{imageUrl}}" mode="aspectFill" bindtap="previewImage"></image>
+          <view class="btn-remove-image" catchtap="removeImage">
+            <text>✕</text>
+          </view>
         </view>
         <view class="btn-choose-image" bindtap="chooseImage" wx:if="{{!imageUrl}}">
-          <text class="upload-icon">📷</text>
-          <text class="upload-text">{{uploading ? '上传中...' : '点击选择图片'}}</text>
+          <text class="choose-icon">📷</text>
+          <text class="choose-text">{{uploading ? '上传中...' : '点击上传图片'}}</text>
         </view>
       </view>
       <input class="form-input image-url-input" placeholder="或手动输入图片链接" value="{{form.image}}" bindinput="onImageInput" />
     </view>
 
-    <!-- 商品分类 -->
-    <view class="form-item">
-      <text class="form-label">商品分类</text>
-      <view class="form-picker" bindtap="openCategoryPicker">
-        <view class="picker-value">
-          <block wx:if="{{categoryIndex >= 0}}">
-            <image class="picker-icon" src="{{categories[categoryIndex].icon}}" mode="aspectFit"></image>
-            <text>{{categories[categoryIndex].name}}</text>
-          </block>
-          <text class="picker-placeholder" wx:else>请选择分类</text>
+    <!-- 基本信息 -->
+    <view class="form-card">
+      <view class="card-title">基本信息</view>
+
+      <view class="form-item">
+        <text class="form-label">商品名称 <text class="required">*</text></text>
+        <input class="form-input" placeholder="请输入商品名称" value="{{form.title}}" bindinput="onTitleInput" maxlength="100" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">商品价格 <text class="required">*</text></text>
+        <view class="price-input-wrap">
+          <text class="price-symbol">¥</text>
+          <input class="form-input price-input" type="digit" placeholder="0.00" value="{{form.price}}" bindinput="onPriceInput" />
         </view>
-        <text class="picker-arrow">▸</text>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">商品分类</text>
+        <view class="form-picker" bindtap="openCategoryPicker">
+          <view class="picker-value">
+            <block wx:if="{{categoryIndex >= 0}}">
+              <image class="picker-icon-img" src="{{categories[categoryIndex].icon}}" mode="aspectFit"></image>
+              <text>{{categories[categoryIndex].name}}</text>
+            </block>
+            <text class="picker-placeholder" wx:else>请选择分类</text>
+          </view>
+          <text class="picker-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">库存数量</text>
+        <input class="form-input" type="number" placeholder="默认100" value="{{form.stock}}" bindinput="onStockInput" />
       </view>
     </view>
 
-    <!-- 库存数量 -->
-    <view class="form-item">
-      <text class="form-label">库存数量</text>
-      <input class="form-input" type="number" placeholder="默认100" value="{{form.stock}}" bindinput="onStockInput" />
+    <!-- 商品描述 -->
+    <view class="form-card">
+      <view class="card-title">商品描述</view>
+      <view class="form-item form-item-no-border">
+        <textarea class="form-textarea" placeholder="请输入商品描述（选填）" value="{{form.description}}" bindinput="onDescInput" maxlength="500" auto-height></textarea>
+        <text class="textarea-counter">{{form.description.length || 0}}/500</text>
+      </view>
     </view>
 
-    <!-- 商品描述 -->
-    <view class="form-item">
-      <text class="form-label">商品描述</text>
-      <textarea class="form-textarea" placeholder="请输入商品描述（选填）" value="{{form.description}}" bindinput="onDescInput" maxlength="500" auto-height></textarea>
+    <!-- 占位，防止底部按钮遮挡 -->
+    <view class="form-bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部按钮 -->
+  <view class="form-actions">
+    <view class="btn-save" bindtap="saveGoods">
+      <text wx:if="{{!saving}}">{{isEdit ? '保存修改' : '立即添加'}}</text>
+      <text wx:else>保存中...</text>
     </view>
   </view>
 
@@ -73,14 +100,6 @@
         <text class="category-option-name">{{item.name}}</text>
         <text class="category-option-check" wx:if="{{categoryIndex === index}}">✓</text>
       </view>
-    </view>
-  </view>
-
-  <!-- 底部按钮 -->
-  <view class="form-actions">
-    <view class="btn-save" bindtap="saveGoods">
-      <text wx:if="{{!saving}}">{{isEdit ? '保存修改' : '立即添加'}}</text>
-      <text wx:else>保存中...</text>
     </view>
   </view>
 </view>

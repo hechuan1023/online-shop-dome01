@@ -36,6 +36,10 @@ Page({
     }
   },
 
+  goBack: function() {
+    wx.navigateBack();
+  },
+
   loadGoods: function(id) {
     wx.showLoading({ title: '加载中...' });
     request({
@@ -194,7 +198,8 @@ Page({
       price: parseFloat(form.price),
       image: form.image || '',
       description: form.description || '',
-      stock: parseInt(form.stock) || 100
+      stock: parseInt(form.stock) || 100,
+      category: form.category || ''
     };
 
     if (this.data.isEdit) {

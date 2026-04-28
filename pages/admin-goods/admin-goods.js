@@ -1,6 +1,8 @@
 const request = require('../../util/request');
 const app = getApp();
 
+const ADMIN_PASSWORD = '1234';
+
 Page({
   data: {
     products: [],
@@ -10,21 +12,63 @@ Page({
     totalPage: 0,
     loading: false,
     keyword: '',
-    showEditDialog: false,
-    editForm: {
-      id: '',
-      title: '',
-      price: '',
-      image: '',
-      description: '',
-      stock: ''
-    },
-    isEditing: false,
-    uploading: false
+    isAuthenticated: false,
+    showPasswordDialog: false,
+    passwordInput: '',
+    passwordError: ''
   },
 
   onLoad: function() {
-    this.loadProducts();
+    this.checkAuth();
+  },
+
+  onShow: function() {
+    if (this.data.isAuthenticated) {
+      this.setData({ page: 1, products: [] });
+      this.loadProducts();
+    }
+  },
+
+  checkAuth: function() {
+    const auth = wx.getStorageSync('adminAuth');
+    if (auth) {
+      this.setData({ isAuthenticated: true });
+      this.loadProducts();
+    } else {
+      this.setData({ showPasswordDialog: true });
+    }
+  },
+
+  onPasswordInput: function(e) {
+    this.setData({ passwordInput: e.detail.value, passwordError: '' });
+  },
+
+  submitPassword: function() {
+    if (this.data.passwordInput === ADMIN_PASSWORD) {
+      wx.setStorageSync('adminAuth', true);
+      this.setData({
+        isAuthenticated: true,
+        showPasswordDialog: false,
+        passwordInput: '',
+        passwordError: ''
+      });
+      this.loadProducts();
+    } else {
+      this.setData({ passwordError: '密码错误，请重试' });
+    }
+  },
+
+  logout: function() {
+    wx.showModal({
+      title: '提示',
+      content: '确定退出管理后台吗？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.removeStorageSync('adminAuth');
+          this.setData({ isAuthenticated: false, showPasswordDialog: true, products: [] });
+        }
+      }
+    });
   },
 
   onPullDownRefresh: function() {
@@ -62,7 +106,6 @@ Page({
     });
   },
 
-  // 搜索
   onSearchInput: function(e) {
     this.setData({ keyword: e.detail.value });
   },
@@ -91,18 +134,15 @@ Page({
     });
   },
 
-  // 添加商品
   goToAdd: function() {
     wx.navigateTo({ url: '/pages/admin-goods-edit/admin-goods-edit' });
   },
 
-  // 编辑商品
   goToEdit: function(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: '/pages/admin-goods-edit/admin-goods-edit?id=' + id });
   },
 
-  // 删除商品
   deleteProduct: function(e) {
     const id = e.currentTarget.dataset.id;
     const title = e.currentTarget.dataset.title;
@@ -133,7 +173,6 @@ Page({
     });
   },
 
-  // 图片预览
   previewImage: function(e) {
     const src = e.currentTarget.dataset.src;
     wx.previewImage({ urls: [src] });

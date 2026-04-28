@@ -6,7 +6,8 @@ Page({
     product: null,
     productId: null,
     loading: true,
-    reviews: []
+    reviews: [],
+    cartCount: 0
   },
 
   onLoad: function(options) {
@@ -14,6 +15,11 @@ Page({
     this.setData({ productId: id });
     this.loadProductDetail(id);
     this.loadReviews(id);
+    this.loadCartCount();
+  },
+
+  onShow: function() {
+    this.loadCartCount();
   },
 
   onShareAppMessage: function() {
@@ -26,7 +32,6 @@ Page({
 
   loadProductDetail: function(id) {
     this.setData({ loading: true });
-    // 获取商品基本信息
     request({
       url: '/buy',
       data: { id: id },
@@ -35,11 +40,10 @@ Page({
       if (res.status === 200 && res.data.length > 0) {
         const product = {
           ...res.data[0],
-          images: [],  // 先初始化，后面填充
+          images: [],
           image: res.data[0].image.startsWith('http') ? res.data[0].image : app.globalData.serverUrl + res.data[0].image
         };
         this.setData({ product });
-        // 加载多图
         this.loadProductImages(id, product);
       } else {
         wx.showToast({ title: '商品不存在', icon: 'none' });
@@ -64,7 +68,6 @@ Page({
         }));
         product.images = images;
         this.setData({ product });
-        // 预加载图片
         images.forEach((img, i) => {
           wx.getImageInfo({
             src: img.image,
@@ -75,7 +78,6 @@ Page({
           });
         });
       } else {
-        // 没有多图，用主图兜底
         product.images = [{ id: 0, image: product.image, localImage: product.localImage }];
         this.setData({ product });
       }
@@ -93,6 +95,19 @@ Page({
     }).then(res => {
       if (res.status === 200) {
         this.setData({ reviews: res.data || [] });
+      }
+    }).catch(() => {});
+  },
+
+  loadCartCount: function() {
+    request({
+      url: '/cart/list',
+      showLoading: false
+    }).then(res => {
+      if (res.status === 200) {
+        const items = res.data || [];
+        const count = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        this.setData({ cartCount: count });
       }
     }).catch(() => {});
   },
@@ -121,6 +136,7 @@ Page({
     }).then(res => {
       if (res.status === 200) {
         wx.showToast({ title: res.msg === '数量+1' ? '购物车数量+1' : '已加入购物车', icon: 'success' });
+        this.loadCartCount();
       }
     }).catch(() => {
       wx.showToast({ title: '添加失败', icon: 'none' });
@@ -138,5 +154,13 @@ Page({
 
   goToCart: function() {
     wx.switchTab({ url: '/pages/cart/cart' });
+  },
+
+  goToHome: function() {
+    wx.switchTab({ url: '/pages/index/index' });
+  },
+
+  contactService: function() {
+    wx.navigateTo({ url: '/pages/customer-service/customer-service' });
   }
 });

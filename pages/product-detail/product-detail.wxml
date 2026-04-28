@@ -10,7 +10,12 @@
 
   <!-- 价格信息区 -->
   <view class="price-section">
-    <text class="product-price">¥{{product.price}}</text>
+    <view class="price-row">
+      <text class="product-price">¥{{product.price}}</text>
+      <view class="sales-info">
+        <text class="sales-text">已售 {{product.sales || 0}} 件</text>
+      </view>
+    </view>
     <view class="price-tags">
       <text class="tag">包邮</text>
       <text class="tag">7天无理由</text>
@@ -22,14 +27,7 @@
     <text class="product-title">{{product.title}}</text>
     <view class="product-meta">
       <text class="meta-item">库存: {{product.stock || '充足'}}</text>
-      <text class="meta-item">销量: {{product.sales || 0}}</text>
     </view>
-  </view>
-
-  <!-- 商品描述 -->
-  <view class="desc-section" wx:if="{{product.description}}">
-    <view class="section-title">商品详情</view>
-    <text class="desc-text">{{product.description}}</text>
   </view>
 
   <!-- 用户评价 -->
@@ -59,18 +57,40 @@
     </view>
   </view>
 
-  <!-- 底部操作栏 -->
-  <view class="bottom-bar">
-    <view class="bottom-icon" bindtap="goToCart">
-      <text class="icon-text">🛒</text>
-      <text class="icon-label">购物车</text>
-    </view>
-    <button class="bottom-btn-add" bindtap="addToCart">加入购物车</button>
-    <button class="bottom-btn-buy" bindtap="buyNow">立即购买</button>
+  <!-- 商品描述 -->
+  <view class="desc-section" wx:if="{{product.description}}">
+    <view class="section-title">商品详情</view>
+    <text class="desc-text">{{product.description}}</text>
   </view>
+
+  <!-- 底部占位 -->
+  <view class="bottom-placeholder"></view>
 </view>
 
-<view class="loading" wx:if="{{loading}}"></view>
+<!-- 底部操作栏 —— 仿京东风格 -->
+<view class="bottom-bar" wx:if="{{product}}">
+  <view class="bar-icon-btn" bindtap="contactService">
+    <text class="bar-icon">💬</text>
+    <text class="bar-icon-label">客服</text>
+  </view>
+  <view class="bar-icon-btn" bindtap="goToCart">
+    <text class="bar-icon">🛒</text>
+    <text class="bar-icon-label">购物车</text>
+    <view class="bar-badge" wx:if="{{cartCount > 0}}">
+      <text class="bar-badge-text">{{cartCount}}</text>
+    </view>
+  </view>
+  <view class="bar-icon-btn" bindtap="goToHome">
+    <text class="bar-icon">🏠</text>
+    <text class="bar-icon-label">首页</text>
+  </view>
+  <button class="bar-btn-add" bindtap="addToCart">加入购物车</button>
+  <button class="bar-btn-buy" bindtap="buyNow">立即购买</button>
+</view>
+
+<view class="loading-full" wx:if="{{loading}}">
+  <text>加载中...</text>
+</view>
 <view class="empty-tip" wx:if="{{!loading && !product}}">
   <text>商品不存在</text>
 </view>

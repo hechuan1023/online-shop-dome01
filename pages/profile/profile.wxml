@@ -2,6 +2,7 @@
   <!-- 头部用户信息区域 -->
   <view class="user-header">
     <view class="header-bg"></view>
+    <view class="header-wave"></view>
     <view class="header-content">
       <view class="user-basic" bindtap="{{isLoggedIn ? '' : 'goToLogin'}}">
         <view class="avatar-wrap">
@@ -21,7 +22,7 @@
       </view>
       <view class="header-right">
         <view class="qrcode-icon" bindtap="showQRCode">
-          <text class="iconfont">码</text>
+          <text class="icon-text">码</text>
         </view>
         <button class="btn-logout" wx:if="{{isLoggedIn}}" catchtap="logout">退出</button>
       </view>
@@ -52,7 +53,7 @@
   </view>
 
   <!-- 订单状态快捷入口 -->
-  <view class="order-card" bindtap="goToOrders">
+  <view class="order-card">
     <view class="card-header">
       <text class="card-title">我的订单</text>
       <view class="card-more" catchtap="goToOrders">
@@ -94,7 +95,7 @@
         </view>
         <text class="status-label">待评价</text>
       </view>
-      <view class="status-item" catchtap="goToRefund">
+      <view class="status-item" bindtap="goToRefund">
         <view class="status-icon-wrap">
           <text class="status-icon">🔄</text>
         </view>

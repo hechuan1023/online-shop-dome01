@@ -1,7 +1,6 @@
 .container {
   background-color: #f7f8fa;
   min-height: 100vh;
-  padding-bottom: 120rpx;
 }
 
 /* ========== 图片轮播 ========== */
@@ -19,27 +18,43 @@
 /* ========== 价格区 ========== */
 .price-section {
   background: linear-gradient(135deg, #e64340, #ff6b6b);
-  padding: 30rpx 24rpx;
+  padding: 24rpx 24rpx 20rpx;
+}
+
+.price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 .product-price {
   font-size: 56rpx;
   color: #fff;
   font-weight: bold;
-  display: block;
+}
+
+.sales-info {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.sales-text {
+  font-size: 22rpx;
+  color: #fff;
 }
 
 .price-tags {
   display: flex;
   gap: 12rpx;
-  margin-top: 16rpx;
+  margin-top: 12rpx;
 }
 
 .tag {
   font-size: 20rpx;
   color: rgba(255, 255, 255, 0.9);
   border: 1rpx solid rgba(255, 255, 255, 0.4);
-  padding: 4rpx 16rpx;
+  padding: 2rpx 14rpx;
   border-radius: 20rpx;
 }
 
@@ -56,7 +71,7 @@
   color: #1a1a1a;
   line-height: 1.5;
   display: block;
-  margin-bottom: 16rpx;
+  margin-bottom: 12rpx;
 }
 
 .product-meta {
@@ -67,28 +82,6 @@
 .meta-item {
   font-size: 24rpx;
   color: #999;
-}
-
-/* ========== 商品描述 ========== */
-.desc-section {
-  background-color: #fff;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
-}
-
-.section-title {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #1a1a1a;
-  margin-bottom: 20rpx;
-  border-left: 6rpx solid #e64340;
-  padding-left: 16rpx;
-}
-
-.desc-text {
-  font-size: 28rpx;
-  color: #666;
-  line-height: 1.8;
 }
 
 /* ========== 用户评价 ========== */
@@ -103,6 +96,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  border-left: 6rpx solid #e64340;
+  padding-left: 16rpx;
 }
 
 .review-item {
@@ -170,7 +171,25 @@
   font-size: 26rpx;
 }
 
-/* ========== 底部操作栏 ========== */
+/* ========== 商品描述 ========== */
+.desc-section {
+  background-color: #fff;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.desc-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* ========== 底部占位 ========== */
+.bottom-placeholder {
+  height: 120rpx;
+}
+
+/* ========== 底部操作栏 —— 仿京东 ========== */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -181,27 +200,53 @@
   display: flex;
   align-items: center;
   border-top: 1rpx solid #eee;
-  padding: 0 20rpx;
+  padding: 0 16rpx;
   z-index: 100;
 }
 
-.bottom-icon {
+.bar-icon-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 30rpx;
+  justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.icon-text {
+.bar-icon {
   font-size: 36rpx;
+  line-height: 1;
 }
 
-.icon-label {
-  font-size: 20rpx;
+.bar-icon-label {
+  font-size: 18rpx;
   color: #666;
+  margin-top: 4rpx;
 }
 
-.bottom-btn-add {
+.bar-badge {
+  position: absolute;
+  top: 4rpx;
+  right: 8rpx;
+  min-width: 28rpx;
+  height: 28rpx;
+  background: #e64340;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6rpx;
+}
+
+.bar-badge-text {
+  font-size: 16rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.bar-btn-add {
   flex: 1;
   height: 72rpx;
   line-height: 72rpx;
@@ -211,9 +256,10 @@
   border-radius: 36rpx 0 0 36rpx;
   font-size: 28rpx;
   font-weight: 500;
+  margin-left: 12rpx;
 }
 
-.bottom-btn-buy {
+.bar-btn-buy {
   flex: 1;
   height: 72rpx;
   line-height: 72rpx;
@@ -223,6 +269,16 @@
   border-radius: 0 36rpx 36rpx 0;
   font-size: 28rpx;
   font-weight: 500;
+}
+
+/* ========== 加载 & 空状态 ========== */
+.loading-full {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
 }
 
 .empty-tip {

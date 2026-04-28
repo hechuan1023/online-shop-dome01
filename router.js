@@ -330,23 +330,24 @@ router.get("/buy", (req, res) => {
 /**
  * 类别
  */
-router.get("/category", (req, res) => {
-    var tag = url.parse(req.url, true).query.tag;
-    const sql = "select * from category where cate=?";
-    SQLConnect(sql, [tag], (result) => {
-        if (result.length > 0) {
-            res.send({
-                status: 200,
-                data: result
-            });
-        } else {
-            res.send({
-                status: 500,
-                msg: "暂无数据"
-            });
-        }
-    })
-});
+trouter.get("/category", (req, res) => {
+	    var tag = url.parse(req.url, true).query.tag;
+	    // 联表查询：根据分类 tag 查出所有关联商品的完整信息
+	    const sql = "SELECT g.* FROM goods g INNER JOIN category c ON g.id = c.goods_id WHERE c.cate = ? ORDER BY g.create_time DESC";
+	    SQLConnect(sql, [tag], (result) => {
+	        if (result && result.length > 0) {
+	            res.send({
+	                status: 200,
+	                data: result
+	            });
+	        } else {
+	            res.send({
+	                status: 200,
+	                data: []
+	            });
+	        }
+	    })
+	});
 
 
 /**
@@ -822,13 +823,20 @@ router.post("/admin/goods/delete", (req, res) => {
  * Body: { id, title, price, image, description, stock }
  */
 router.post("/admin/goods/update", (req, res) => {
-    const { id, title, price, image, description, stock } = req.body;
+    const { id, title, price, image, description, stock, category } = req.body;
     if (!id) {
         return res.status(400).send({ status: 400, msg: "缺少商品ID" });
     }
     const sql = "UPDATE goods SET title=?, price=?, image=?, description=?, stock=? WHERE id=?";
     SQLConnect(sql, [title, price, image, description, stock, id], (result) => {
         if (result.affectedRows > 0) {
+            if (category !== undefined) {
+                SQLConnect("DELETE FROM category WHERE goods_id=?", [id], () => {
+                    if (category) {
+                        SQLConnect("INSERT INTO category (cate, goods_id) VALUES (?,?)", [category, id], () => {});
+                    }
+                });
+            }
             res.send({ status: 200, msg: "修改成功" });
         } else {
             res.status(500).send({ status: 500, msg: "商品不存在或修改失败" });
@@ -1131,13 +1139,20 @@ router.post("/admin/goods/delete", (req, res) => {
  * Body: { id, title, price, image, description, stock }
  */
 router.post("/admin/goods/update", (req, res) => {
-    const { id, title, price, image, description, stock } = req.body;
+    const { id, title, price, image, description, stock, category } = req.body;
     if (!id) {
         return res.status(400).send({ status: 400, msg: "缺少商品ID" });
     }
     const sql = "UPDATE goods SET title=?, price=?, image=?, description=?, stock=? WHERE id=?";
     SQLConnect(sql, [title, price, image, description, stock, id], (result) => {
         if (result.affectedRows > 0) {
+            if (category !== undefined) {
+                SQLConnect("DELETE FROM category WHERE goods_id=?", [id], () => {
+                    if (category) {
+                        SQLConnect("INSERT INTO category (cate, goods_id) VALUES (?,?)", [category, id], () => {});
+                    }
+                });
+            }
             res.send({ status: 200, msg: "修改成功" });
         } else {
             res.status(500).send({ status: 500, msg: "商品不存在或修改失败" });
