@@ -8,9 +8,10 @@
           <text class="item-name">{{item.title}}</text>
           <text class="item-price">¥{{item.price}}</text>
           <view class="item-actions">
+            <!-- 数量控件：支持加减和手动输入 -->
             <view class="quantity-control">
               <button class="btn-quantity {{item.quantity <= 1 ? 'disabled' : ''}}" data-id="{{item.id}}" data-action="decrease" bindtap="changeQuantity">-</button>
-              <text class="quantity">{{item.quantity}}</text>
+              <input class="quantity-input" type="number" value="{{item.quantity}}" data-id="{{item.id}}" bindblur="onQuantityBlur" bindinput="onQuantityInput" />
               <button class="btn-quantity" data-id="{{item.id}}" data-action="increase" bindtap="changeQuantity">+</button>
             </view>
             <text class="btn-delete" data-id="{{item.id}}" bindtap="deleteItem">删除</text>
