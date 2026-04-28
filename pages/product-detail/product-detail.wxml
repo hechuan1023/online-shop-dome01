@@ -84,6 +84,10 @@
     <text class="bar-icon">🏠</text>
     <text class="bar-icon-label">首页</text>
   </view>
+  <view class="bar-icon-btn bar-favorite-btn" bindtap="toggleFavorite">
+    <text class="bar-icon {{isFavorite ? 'bar-icon-favorite' : ''}}">{{isFavorite ? '❤️' : '🤍'}}</text>
+    <text class="bar-icon-label {{isFavorite ? 'bar-label-favorite' : ''}}">{{isFavorite ? '已收藏' : '收藏'}}</text>
+  </view>
   <button class="bar-btn-add" bindtap="addToCart">加入购物车</button>
   <button class="bar-btn-buy" bindtap="buyNow">立即购买</button>
 </view>
