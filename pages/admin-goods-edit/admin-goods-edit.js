@@ -225,6 +225,7 @@ Page({
 
   uploadImage: function(filePath, type, index) {
     const that = this;
+    // 先上传图片到服务器获取URL
     wx.uploadFile({
       url: app.globalData.baseUrl + '/admin/goods/upload',
       filePath: filePath,
@@ -233,27 +234,27 @@ Page({
       success: (res) => {
         try {
           const data = JSON.parse(res.data);
-          console.log('[上传返回]', type, index, JSON.stringify(data));
           if (data.status === 200) {
             const fullUrl = data.data.url.startsWith('http') ? data.data.url : app.globalData.serverUrl + data.data.url;
-            console.log('[上传成功]', type, index, fullUrl);
-            if (type === 'main') {
-              that.setData({ 'form.image': fullUrl });
-            } else if (type === 'detail') {
-              const key = 'detailImages[' + index + '].url';
-              const uploadingKey = 'detailImages[' + index + '].uploading';
-              that.setData({ [key]: fullUrl, [uploadingKey]: false });
-            } else if (type === 'content') {
-              const key = 'detailContent[' + index + '].value';
-              const uploadingKey = 'detailContent[' + index + '].uploading';
-              that.setData({ [key]: fullUrl, [uploadingKey]: false });
-            }
+            // 把HTTP图片转成base64，解决小程序不支持HTTP的问题
+            that.urlToBase64(fullUrl, function(base64Url) {
+              if (type === 'main') {
+                that.setData({ 'form.image': base64Url });
+              } else if (type === 'detail') {
+                const key = 'detailImages[' + index + '].url';
+                const uploadingKey = 'detailImages[' + index + '].uploading';
+                that.setData({ [key]: base64Url, [uploadingKey]: false });
+              } else if (type === 'content') {
+                const key = 'detailContent[' + index + '].value';
+                const uploadingKey = 'detailContent[' + index + '].uploading';
+                that.setData({ [key]: base64Url, [uploadingKey]: false });
+              }
+            });
           } else {
             wx.showToast({ title: data.msg || '上传失败', icon: 'none' });
             that.clearUploadingFlag(type, index);
           }
         } catch (e) {
-          console.log('[上传解析失败]', e, res.data);
           wx.showToast({ title: '上传失败', icon: 'none' });
           that.clearUploadingFlag(type, index);
         }
@@ -261,6 +262,27 @@ Page({
       fail: () => {
         wx.showToast({ title: '上传失败', icon: 'none' });
         that.clearUploadingFlag(type, index);
+      }
+    });
+  },
+
+  // 把图片URL转成base64（解决小程序不支持HTTP图片的问题）
+  urlToBase64: function(url, callback) {
+    wx.request({
+      url: url,
+      responseType: 'arraybuffer',
+      success: (res) => {
+        const base64 = wx.arrayBufferToBase64(res.data);
+        // 根据文件扩展名判断MIME类型
+        let mime = 'image/jpeg';
+        if (url.indexOf('.png') !== -1) mime = 'image/png';
+        else if (url.indexOf('.gif') !== -1) mime = 'image/gif';
+        else if (url.indexOf('.webp') !== -1) mime = 'image/webp';
+        callback('data:' + mime + ';base64,' + base64);
+      },
+      fail: () => {
+        // 转base64失败，直接用原URL（至少主图能显示）
+        callback(url);
       }
     });
   },
