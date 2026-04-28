@@ -105,7 +105,7 @@ Page({
 
   loadCartCount: function() {
     request({
-      url: '/cart/list',
+      url: '/cart',
       showLoading: false
     }).then(res => {
       if (res.status === 200) {
