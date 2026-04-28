@@ -140,14 +140,15 @@ Page({
     let allChecked = true;
     cartItems.forEach(item => {
       if (item.checked) {
-        totalPrice += item.price * item.quantity;
+        totalPrice += item.price * 100 * item.quantity;
         checkedCount += 1;
       } else {
         allChecked = false;
       }
     });
+    totalPrice = totalPrice / 100
     this.setData({
-      totalPrice: totalPrice,
+      totalPrice: totalPrice.toFixed(2),
       checkedCount: checkedCount,
       allChecked: cartItems.length > 0 ? allChecked : false
     });
