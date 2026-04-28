@@ -49,17 +49,18 @@
 
 .info-row {
   display: flex;
-  padding: 16rpx 0;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
 }
 
 .info-label {
-  width: 160rpx;
   font-size: 28rpx;
   color: #666;
+  margin-right: 16rpx;
 }
 
 .info-value {
-  flex: 1;
   font-size: 28rpx;
   color: #333;
 }
