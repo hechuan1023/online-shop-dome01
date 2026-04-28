@@ -4,19 +4,19 @@ const app = getApp();
 Page({
   data: {
     banners: [
-      { id: 1, image: 'http://118.31.108.147/images/banner/1.jpg' },
-      { id: 2, image: 'http://118.31.108.147/images/banner/2.png' },
-      { id: 3, image: 'http://118.31.108.147/images/banner/3.jpg' },
-      { id: 4, image: 'http://118.31.108.147/images/banner/4.jpg' }
+      { id: 1, image: 'https://118.31.108.147/images/banner/1.jpg' },
+      { id: 2, image: 'https://118.31.108.147/images/banner/2.png' },
+      { id: 3, image: 'https://118.31.108.147/images/banner/3.jpg' },
+      { id: 4, image: 'https://118.31.108.147/images/banner/4.jpg' }
     ],
     hotKeywords: [],
     cartToastShow: false,
     cartToastMsg: '',
     categories: [
-      { id: 1, name: '手机', tag: 'phone', icon: 'http://118.31.108.147/images/category/phone.png' },
-      { id: 2, name: '电脑', tag: 'computer', icon: 'http://118.31.108.147/images/category/computer.png' },
-      { id: 3, name: '耳机', tag: 'earphone', icon: 'http://118.31.108.147/images/category/earphone.png' },
-      { id: 4, name: '家电', tag: 'appliance', icon: 'http://118.31.108.147/images/category/appliance.png' },
+      { id: 1, name: '手机', tag: 'phone', icon: 'https://118.31.108.147/images/category/phone.png' },
+      { id: 2, name: '电脑', tag: 'computer', icon: 'https://118.31.108.147/images/category/computer.png' },
+      { id: 3, name: '耳机', tag: 'earphone', icon: 'https://118.31.108.147/images/category/earphone.png' },
+      { id: 4, name: '家电', tag: 'appliance', icon: 'https://118.31.108.147/images/category/appliance.png' },
     ],
     products: [],
     page: 1,

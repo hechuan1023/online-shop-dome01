@@ -4,13 +4,13 @@ const app = getApp();
 Page({
   data: {
     categories: [
-      { id: 1, name: '手机', tag: 'phone', icon: 'http://118.31.108.147/images/category/phone.png' },
-      { id: 2, name: '电脑', tag: 'computer', icon: 'http://118.31.108.147/images/category/computer.png' },
-      { id: 3, name: '耳机', tag: 'earphone', icon: 'http://118.31.108.147/images/category/earphone.png' },
-      { id: 4, name: '家电', tag: 'appliance', icon: 'http://118.31.108.147/images/category/appliance.png' },
-      { id: 5, name: '服饰', tag: 'clothing', icon: 'http://118.31.108.147/images/category/clothing.png' },
-      { id: 6, name: '食品', tag: 'food', icon: 'http://118.31.108.147/images/category/food.png' },
-      { id: 7, name: '相机', tag: 'camera', icon: 'http://118.31.108.147/images/category/camera.png' }
+      { id: 1, name: '手机', tag: 'phone', icon: 'https://118.31.108.147/images/category/phone.png' },
+      { id: 2, name: '电脑', tag: 'computer', icon: 'https://118.31.108.147/images/category/computer.png' },
+      { id: 3, name: '耳机', tag: 'earphone', icon: 'https://118.31.108.147/images/category/earphone.png' },
+      { id: 4, name: '家电', tag: 'appliance', icon: 'https://118.31.108.147/images/category/appliance.png' },
+      { id: 5, name: '服饰', tag: 'clothing', icon: 'https://118.31.108.147/images/category/clothing.png' },
+      { id: 6, name: '食品', tag: 'food', icon: 'https://118.31.108.147/images/category/food.png' },
+      { id: 7, name: '相机', tag: 'camera', icon: 'https://118.31.108.147/images/category/camera.png' }
     ],
     currentCategory: 'phone',
     products: [],

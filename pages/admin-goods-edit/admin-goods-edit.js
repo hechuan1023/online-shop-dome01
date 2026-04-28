@@ -14,13 +14,13 @@ Page({
       category: ''
     },
     categories: [
-      { tag: 'phone', name: '手机', icon: 'http://118.31.108.147/images/category/phone.png' },
-      { tag: 'computer', name: '电脑', icon: 'http://118.31.108.147/images/category/computer.png' },
-      { tag: 'earphone', name: '耳机', icon: 'http://118.31.108.147/images/category/earphone.png' },
-      { tag: 'appliance', name: '家电', icon: 'http://118.31.108.147/images/category/appliance.png' },
-      { tag: 'clothing', name: '服饰', icon: 'http://118.31.108.147/images/category/clothing.png' },
-      { tag: 'food', name: '食品', icon: 'http://118.31.108.147/images/category/food.png' },
-      { tag: 'camera', name: '相机', icon: 'http://118.31.108.147/images/category/camera.png' }
+      { tag: 'phone', name: '手机', icon: 'https://118.31.108.147/images/category/phone.png' },
+      { tag: 'computer', name: '电脑', icon: 'https://118.31.108.147/images/category/computer.png' },
+      { tag: 'earphone', name: '耳机', icon: 'https://118.31.108.147/images/category/earphone.png' },
+      { tag: 'appliance', name: '家电', icon: 'https://118.31.108.147/images/category/appliance.png' },
+      { tag: 'clothing', name: '服饰', icon: 'https://118.31.108.147/images/category/clothing.png' },
+      { tag: 'food', name: '食品', icon: 'https://118.31.108.147/images/category/food.png' },
+      { tag: 'camera', name: '相机', icon: 'https://118.31.108.147/images/category/camera.png' }
     ],
     categoryIndex: -1,
     showCategoryPicker: false,
