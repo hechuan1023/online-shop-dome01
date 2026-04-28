@@ -24,3 +24,6 @@ desktop.ini
 
 # 微信开发者工具
 miniprogram_npm/
+
+# Claude Code
+.claude/
