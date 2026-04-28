@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "商品列表（优化版）",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "goods-virtual-list": "../../components/goods-virtual-list/goods-virtual-list"
+  }
+}
