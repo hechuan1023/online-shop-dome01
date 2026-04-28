@@ -355,56 +355,24 @@ router.get("/category", (req, res) => {
  */
 
 router.post("/login", (req, res) => {
-    const { code } = req.body;
+    // Mock 登录：直接返回模拟的 openid 和 token，不调用微信接口
+    const mockOpenid = "mock_openid_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+    const mockSessionKey = "mock_session_" + Date.now();
+    const token = "mock_token_" + mockOpenid + "_" + Date.now();
 
-    if (!code) {
-        return res.status(400).send({ status: 400, msg: "缺少 code 参数" });
-    }
+    console.log("[Mock登录] openid =", mockOpenid);
+    console.log("[Mock登录] token  =", token);
 
-    // 调用微信 jscode2session 接口换取 openid 和 session_key
-    const config = require('../util/config');
-    const appId = config.mp.appId;
-    const appSecret = config.mp.appSecret;
-    const wechatUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + appSecret + "&js_code=" + code + "&grant_type=authorization_code";
+    // 可选：存入数据库（如果 user 表存在的话）
+    const sql = "INSERT INTO user (openid, session_key) VALUES (?,?) ON DUPLICATE KEY UPDATE session_key = VALUES(session_key)";
+    SQLConnect(sql, [mockOpenid, mockSessionKey], (result) => {
+        console.log("[Mock登录] 数据库写入", result.affectedRows > 0 ? "成功" : "跳过");
+    });
 
-    console.log("[登录] 请求微信接口，code:", code);
-
-    request.get(wechatUrl, function(err, response, body) {
-        if (err) {
-            console.error("[登录] 请求微信接口失败:", err);
-            return res.status(500).send({ status: 500, msg: "微信接口请求失败" });
-        }
-
-        try {
-            const data = JSON.parse(body);
-            console.log("[登录] 微信响应:", JSON.stringify(data));
-
-            if (data.errcode) {
-                console.error("[登录] 微信返回错误:", data.errcode, data.errmsg);
-                return res.status(401).send({ status: 401, msg: "登录失败: " + (data.errmsg || "code 无效") });
-            }
-
-            const openid = data.openid;
-            const sessionKey = data.session_key;
-
-            // 生成自定义 token
-            const token = openid + "_" + Date.now();
-
-            // 存入数据库
-            const sql = "INSERT INTO user (openid, session_key) VALUES (?,?) ON DUPLICATE KEY UPDATE session_key = VALUES(session_key)";
-            SQLConnect(sql, [openid, sessionKey], (result) => {
-                console.log("[登录] 用户 openid:", openid, "数据库写入", result.affectedRows > 0 ? "成功" : "更新");
-            });
-
-            res.send({
-                status: 200,
-                data: { openid: openid, token: token },
-                msg: "登录成功"
-            });
-        } catch (e) {
-            console.error("[登录] 解析微信响应失败:", e);
-            return res.status(500).send({ status: 500, msg: "服务器内部错误" });
-        }
+    res.send({
+        status: 200,
+        data: { openid: mockOpenid, token: token },
+        msg: "登录成功"
     });
 })
 
@@ -768,6 +736,71 @@ router.post("/chat/send", (req, res) => {
         });
     }, delay);
 })
+// ============ 收藏 API ============
+
+/**
+ * 添加收藏
+ * POST /api/favorite/add
+ * Body: { goods_id }
+ */
+router.post("/favorite/add", (req, res) => {
+    const { goods_id } = req.body;
+    if (!goods_id) {
+        return res.status(400).send({ status: 400, msg: "缺少商品ID" });
+    }
+    const sql = "INSERT INTO favorites (goods_id) VALUES (?)";
+    SQLConnect(sql, [goods_id], (result) => {
+        if (result.affectedRows > 0) {
+            res.send({ status: 200, msg: "收藏成功" });
+        } else {
+            res.status(500).send({ status: 500, msg: "收藏失败，可能已收藏" });
+        }
+    });
+});
+
+/**
+ * 取消收藏
+ * POST /api/favorite/remove
+ * Body: { goods_id }
+ */
+router.post("/favorite/remove", (req, res) => {
+    const { goods_id } = req.body;
+    if (!goods_id) {
+        return res.status(400).send({ status: 400, msg: "缺少商品ID" });
+    }
+    const sql = "DELETE FROM favorites WHERE goods_id=?";
+    SQLConnect(sql, [goods_id], (result) => {
+        if (result.affectedRows > 0) {
+            res.send({ status: 200, msg: "取消收藏成功" });
+        } else {
+            res.status(500).send({ status: 500, msg: "取消失败" });
+        }
+    });
+});
+
+/**
+ * 收藏列表
+ * GET /api/favorite/list
+ */
+router.get("/favorite/list", (req, res) => {
+    const sql = "SELECT g.*, f.id as favorite_id, f.create_time as favorite_time FROM favorites f INNER JOIN goods g ON f.goods_id = g.id ORDER BY f.create_time DESC";
+    SQLConnect(sql, [], (result) => {
+        res.send({ status: 200, data: result || [] });
+    });
+});
+
+/**
+ * 检查是否已收藏
+ * GET /api/favorite/check?goods_id=xxx
+ */
+router.get("/favorite/check", (req, res) => {
+    const goods_id = url.parse(req.url, true).query.goods_id;
+    const sql = "SELECT id FROM favorites WHERE goods_id=?";
+    SQLConnect(sql, [goods_id], (result) => {
+        res.send({ status: 200, data: { isFavorite: result && result.length > 0 } });
+    });
+});
+
 // ============ 商品管理后台 API ============
 
 /**
