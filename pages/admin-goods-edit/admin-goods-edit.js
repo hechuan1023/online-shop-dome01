@@ -128,15 +128,16 @@ Page({
       sourceType: ['album', 'camera'],
       sizeType: ['compressed'],
       success: function(res) {
+        const currentLength = that.data.detailImages.length;
         const newImages = that.data.detailImages.slice();
         res.tempFiles.forEach((file, i) => {
           const tempId = Date.now() + i;
           newImages.push({ id: tempId, url: file.tempFilePath, uploading: true });
         });
         that.setData({ detailImages: newImages });
-        // 逐张上传
+        // 逐张上传，index 基于选择前的长度计算
         res.tempFiles.forEach((file, i) => {
-          const index = that.data.detailImages.length + i;
+          const index = currentLength + i;
           that.uploadImage(file.tempFilePath, 'detail', index);
         });
       }
@@ -247,15 +248,29 @@ Page({
             }
           } else {
             wx.showToast({ title: data.msg || '上传失败', icon: 'none' });
+            that.clearUploadingFlag(type, index);
           }
         } catch (e) {
           wx.showToast({ title: '上传失败', icon: 'none' });
+          that.clearUploadingFlag(type, index);
         }
       },
       fail: () => {
         wx.showToast({ title: '上传失败', icon: 'none' });
+        that.clearUploadingFlag(type, index);
       }
     });
+  },
+
+  // 清除上传失败时的 uploading 标志
+  clearUploadingFlag: function(type, index) {
+    if (type === 'detail') {
+      const key = 'detailImages[' + index + '].uploading';
+      this.setData({ [key]: false });
+    } else if (type === 'content') {
+      const key = 'detailContent[' + index + '].uploading';
+      this.setData({ [key]: false });
+    }
   },
 
   // ========== 加载已有数据 ==========
