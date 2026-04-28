@@ -1,6 +1,10 @@
+/* ========== 全局容器 ========== */
 .container {
   background-color: #f7f8fa;
   min-height: 100vh;
+  /* 底部留出底部栏高度 + 安全区 */
+  padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
 }
 
 /* ========== 图片轮播 ========== */
@@ -8,11 +12,17 @@
   width: 100%;
   height: 750rpx;
   background-color: #fff;
+  position: relative;
 }
 
 .swiper-image {
   width: 100%;
   height: 750rpx;
+  background-color: #f5f5f5;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ccc"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 8h-4v4h-4v-4H6V9h4V5h4v4h4v2z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60rpx;
 }
 
 /* ========== 价格区 ========== */
@@ -25,12 +35,14 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .product-price {
   font-size: 56rpx;
   color: #fff;
   font-weight: bold;
+  line-height: 1.2;
 }
 
 .sales-info {
@@ -48,6 +60,7 @@
   display: flex;
   gap: 12rpx;
   margin-top: 12rpx;
+  flex-wrap: wrap;
 }
 
 .tag {
@@ -56,6 +69,8 @@
   border: 1rpx solid rgba(255, 255, 255, 0.4);
   padding: 2rpx 14rpx;
   border-radius: 20rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
 }
 
 /* ========== 标题区 ========== */
@@ -72,11 +87,13 @@
   line-height: 1.5;
   display: block;
   margin-bottom: 12rpx;
+  word-break: break-word;
 }
 
 .product-meta {
   display: flex;
   gap: 30rpx;
+  flex-wrap: wrap;
 }
 
 .meta-item {
@@ -96,6 +113,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24rpx;
+  flex-wrap: wrap;
 }
 
 .section-title {
@@ -119,6 +137,8 @@
   display: flex;
   align-items: center;
   margin-bottom: 12rpx;
+  flex-wrap: wrap;
+  gap: 8rpx;
 }
 
 .review-avatar {
@@ -127,16 +147,25 @@
   border-radius: 50%;
   margin-right: 16rpx;
   background-color: #f5f5f5;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ccc"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 32rpx;
+  flex-shrink: 0;
 }
 
 .review-user {
   flex: 1;
+  min-width: 0;
 }
 
 .review-name {
   font-size: 26rpx;
   color: #333;
   display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .review-stars {
@@ -156,12 +185,14 @@
 .review-time {
   font-size: 22rpx;
   color: #bbb;
+  flex-shrink: 0;
 }
 
 .review-content {
   font-size: 26rpx;
   color: #666;
   line-height: 1.6;
+  word-break: break-word;
 }
 
 .reviews-empty {
@@ -182,26 +213,31 @@
   font-size: 28rpx;
   color: #666;
   line-height: 1.8;
+  word-break: break-word;
 }
 
-/* ========== 底部占位 ========== */
+/* 底部占位（已由 container 的 padding-bottom 代替，但保留以兼容额外内容） */
 .bottom-placeholder {
-  height: 120rpx;
+  height: 0;
 }
 
-/* ========== 底部操作栏 —— 仿京东 ========== */
+/* ========== 底部操作栏 —— 仿京东（适配安全区） ========== */
 .bottom-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 100rpx;
   background-color: #fff;
   display: flex;
   align-items: center;
   border-top: 1rpx solid #eee;
   padding: 0 16rpx;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
   z-index: 100;
+  height: calc(100rpx + constant(safe-area-inset-bottom));
+  height: calc(100rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
 .bar-icon-btn {
@@ -216,7 +252,7 @@
 }
 
 .bar-icon {
-  font-size: 36rpx;
+  font-size: 40rpx;
   line-height: 1;
 }
 
@@ -246,29 +282,39 @@
   font-weight: bold;
 }
 
-.bar-btn-add {
+.bar-btn-add,
+.bar-btn-buy {
   flex: 1;
   height: 72rpx;
-  line-height: 72rpx;
-  background: linear-gradient(135deg, #ffb347, #ff8c00);
-  color: #fff;
   border: none;
-  border-radius: 36rpx 0 0 36rpx;
   font-size: 28rpx;
   font-weight: 500;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.bar-btn-add {
+  background: linear-gradient(135deg, #ffb347, #ff8c00);
+  color: #fff;
+  border-radius: 36rpx 0 0 36rpx;
   margin-left: 12rpx;
 }
 
 .bar-btn-buy {
-  flex: 1;
-  height: 72rpx;
-  line-height: 72rpx;
   background: linear-gradient(135deg, #e64340, #ff6b6b);
   color: #fff;
-  border: none;
   border-radius: 0 36rpx 36rpx 0;
-  font-size: 28rpx;
-  font-weight: 500;
+}
+
+/* 去除 button 默认的边框和 after 伪类 */
+.bar-btn-add::after,
+.bar-btn-buy::after {
+  border: none;
 }
 
 /* ========== 加载 & 空状态 ========== */
@@ -279,6 +325,7 @@
   padding: 100rpx 0;
   color: #999;
   font-size: 28rpx;
+  background: #f7f8fa;
 }
 
 .empty-tip {
@@ -286,4 +333,30 @@
   padding: 100rpx 0;
   color: #999;
   font-size: 28rpx;
+  background: #f7f8fa;
+}
+
+/* 小屏幕适配 */
+@media (max-width: 360px) {
+  .product-swiper,
+  .swiper-image {
+    height: 600rpx;
+  }
+  .product-price {
+    font-size: 48rpx;
+  }
+  .product-title {
+    font-size: 30rpx;
+  }
+  .bar-icon {
+    font-size: 36rpx;
+  }
+  .bar-btn-add,
+  .bar-btn-buy {
+    height: 64rpx;
+    font-size: 26rpx;
+  }
+  .bottom-bar {
+    height: calc(92rpx + env(safe-area-inset-bottom));
+  }
 }
