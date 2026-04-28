@@ -8,7 +8,7 @@
       <block wx:for="{{categories}}" wx:key="id">
         <view class="sidebar-item {{currentCategory === item.tag ? 'active' : ''}}"
               bindtap="switchCategory" data-tag="{{item.tag}}">
-          <image class="sidebar-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <image class="sidebar-icon" src="{{item.localIcon || item.icon}}" mode="aspectFit"></image>
           <text class="sidebar-text">{{item.name}}</text>
         </view>
       </block>

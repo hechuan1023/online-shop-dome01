@@ -3,15 +3,23 @@ const app = getApp();
 
 Page({
   data: {
-    banners: [],
+    banners: [
+      { id: 1, image: 'http://118.31.108.147/images/banner/1.jpg' },
+      { id: 2, image: 'http://118.31.108.147/images/banner/2.png' },
+      { id: 3, image: 'http://118.31.108.147/images/banner/3.jpg' },
+      { id: 4, image: 'http://118.31.108.147/images/banner/4.jpg' }
+    ],
     hotKeywords: [],
     cartToastShow: false,
     cartToastMsg: '',
     categories: [
-      { id: 1, name: '手机', tag: 'phone', icon: '/images/cat-phone.png' },
-      { id: 2, name: '电脑', tag: 'computer', icon: '/images/cat-computer.png' },
-      { id: 3, name: '耳机', tag: 'earphone', icon: '/images/cat-earphone.png' },
-      { id: 4, name: '家电', tag: 'appliance', icon: '/images/cat-appliance.png' }
+      { id: 1, name: '手机', tag: 'phone', icon: 'http://118.31.108.147/images/category/phone.jpg' },
+      { id: 2, name: '电脑', tag: 'computer', icon: 'http://118.31.108.147/images/category/computer.jpg' },
+      { id: 3, name: '耳机', tag: 'earphone', icon: 'http://118.31.108.147/images/category/earphone.jpg' },
+      { id: 4, name: '家电', tag: 'appliance', icon: 'http://118.31.108.147/images/category/appliance.jpg' },
+      { id: 5, name: '服饰', tag: 'clothing', icon: 'http://118.31.108.147/images/category/clothing.jpg' },
+      { id: 6, name: '食品', tag: 'food', icon: 'http://118.31.108.147/images/category/food.jpg' },
+      { id: 7, name: '相机', tag: 'camera', icon: 'http://118.31.108.147/images/category/camera.jpg' }
     ],
     products: [],
     page: 1,
@@ -20,14 +28,14 @@ Page({
   },
 
   onLoad: function() {
-    this.loadBanners();
+    this.cacheBannerImages();
+    this.cacheCategoryIcons();
     this.loadHotKeywords();
     this.loadProducts();
   },
 
   onPullDownRefresh: function() {
     this.setData({ page: 1, products: [], hasMore: true });
-    this.loadBanners();
     this.loadProducts();
     wx.stopPullDownRefresh();
   },
@@ -38,24 +46,28 @@ Page({
     }
   },
 
-  loadBanners: function() {
-    request({ url: '/banner', showLoading: false }).then(res => {
-      if (res.status === 200) {
-        const banners = (res.data.result || []).map(item => ({
-          ...item,
-          image: item.image.startsWith('http') ? item.image : app.globalData.serverUrl + item.image
-        }));
-        this.setData({ banners });
-        banners.forEach((item, index) => {
-          wx.getImageInfo({
-            src: item.image,
-            success: (imgRes) => {
-              this.setData({ ['banners[' + index + '].localImage']: imgRes.path });
-            }
-          });
-        });
-      }
-    }).catch(() => {});
+  cacheCategoryIcons: function() {
+    const categories = this.data.categories;
+    categories.forEach((item, index) => {
+      wx.getImageInfo({
+        src: item.icon,
+        success: (imgRes) => {
+          this.setData({ ['categories[' + index + '].localIcon']: imgRes.path });
+        }
+      });
+    });
+  },
+
+  cacheBannerImages: function() {
+    const banners = this.data.banners;
+    banners.forEach((item, index) => {
+      wx.getImageInfo({
+        src: item.image,
+        success: (imgRes) => {
+          this.setData({ ['banners[' + index + '].localImage']: imgRes.path });
+        }
+      });
+    });
   },
 
   loadHotKeywords: function() {

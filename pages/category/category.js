@@ -4,12 +4,13 @@ const app = getApp();
 Page({
   data: {
     categories: [
-      { id: 1, name: '手机', tag: 'phone', icon: '/images/cat-phone.png' },
-      { id: 2, name: '电脑', tag: 'computer', icon: '/images/cat-computer.png' },
-      { id: 3, name: '耳机', tag: 'earphone', icon: '/images/cat-earphone.png' },
-      { id: 4, name: '家电', tag: 'appliance', icon: '/images/cat-appliance.png' },
-      { id: 5, name: '服饰', tag: 'clothing', icon: '/images/cat-clothing.png' },
-      { id: 6, name: '食品', tag: 'food', icon: '/images/cat-food.png' }
+      { id: 1, name: '手机', tag: 'phone', icon: 'http://118.31.108.147/images/category/phone.jpg' },
+      { id: 2, name: '电脑', tag: 'computer', icon: 'http://118.31.108.147/images/category/computer.jpg' },
+      { id: 3, name: '耳机', tag: 'earphone', icon: 'http://118.31.108.147/images/category/earphone.jpg' },
+      { id: 4, name: '家电', tag: 'appliance', icon: 'http://118.31.108.147/images/category/appliance.jpg' },
+      { id: 5, name: '服饰', tag: 'clothing', icon: 'http://118.31.108.147/images/category/clothing.jpg' },
+      { id: 6, name: '食品', tag: 'food', icon: 'http://118.31.108.147/images/category/food.jpg' },
+      { id: 7, name: '相机', tag: 'camera', icon: 'http://118.31.108.147/images/category/camera.jpg' }
     ],
     currentCategory: 'phone',
     products: [],
@@ -17,7 +18,20 @@ Page({
   },
 
   onLoad: function() {
+    this.cacheCategoryIcons();
     this.loadCategoryProducts('phone');
+  },
+
+  cacheCategoryIcons: function() {
+    const categories = this.data.categories;
+    categories.forEach((item, index) => {
+      wx.getImageInfo({
+        src: item.icon,
+        success: (imgRes) => {
+          this.setData({ ['categories[' + index + '].localIcon']: imgRes.path });
+        }
+      });
+    });
   },
 
   switchCategory: function(e) {

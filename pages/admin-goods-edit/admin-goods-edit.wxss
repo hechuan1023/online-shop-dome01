@@ -120,15 +120,104 @@
 .form-picker {
   padding: 16rpx 0;
   border-bottom: 1rpx solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .picker-value {
   font-size: 28rpx;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.picker-icon {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 8rpx;
 }
 
 .picker-placeholder {
   color: #ccc;
+}
+
+.picker-arrow {
+  font-size: 32rpx;
+  color: #ccc;
+}
+
+/* 分类选择弹窗 */
+.category-picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.category-picker-panel {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding-bottom: 40rpx;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.picker-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.picker-panel-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.picker-panel-close {
+  font-size: 36rpx;
+  color: #999;
+  padding: 0 10rpx;
+}
+
+.category-option {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.category-option:active {
+  background: #f5f5f5;
+}
+
+.category-option-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+}
+
+.category-option-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.category-option-check {
+  font-size: 32rpx;
+  color: #07c160;
+  font-weight: bold;
 }
 
 /* 底部按钮 */

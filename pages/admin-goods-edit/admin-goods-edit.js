@@ -14,15 +14,16 @@ Page({
       category: ''
     },
     categories: [
-      { tag: 'phone', name: '手机' },
-      { tag: 'computer', name: '电脑' },
-      { tag: 'earphone', name: '耳机' },
-      { tag: 'appliance', name: '家电' },
-      { tag: 'clothing', name: '服饰' },
-      { tag: 'food', name: '食品' },
-      { tag: 'camera', name: '相机' }
+      { tag: 'phone', name: '手机', icon: 'http://118.31.108.147/images/category/phone.jpg' },
+      { tag: 'computer', name: '电脑', icon: 'http://118.31.108.147/images/category/computer.jpg' },
+      { tag: 'earphone', name: '耳机', icon: 'http://118.31.108.147/images/category/earphone.jpg' },
+      { tag: 'appliance', name: '家电', icon: 'http://118.31.108.147/images/category/appliance.jpg' },
+      { tag: 'clothing', name: '服饰', icon: 'http://118.31.108.147/images/category/clothing.jpg' },
+      { tag: 'food', name: '食品', icon: 'http://118.31.108.147/images/category/food.jpg' },
+      { tag: 'camera', name: '相机', icon: 'http://118.31.108.147/images/category/camera.jpg' }
     ],
     categoryIndex: -1,
+    showCategoryPicker: false,
     uploading: false,
     saving: false,
     imageUrl: ''
@@ -81,11 +82,20 @@ Page({
     this.setData({ 'form.stock': e.detail.value });
   },
 
-  onCategoryChange: function(e) {
-    const index = e.detail.value;
+  openCategoryPicker: function() {
+    this.setData({ showCategoryPicker: true });
+  },
+
+  closeCategoryPicker: function() {
+    this.setData({ showCategoryPicker: false });
+  },
+
+  selectCategory: function(e) {
+    const index = e.currentTarget.dataset.index;
     this.setData({
       categoryIndex: index,
-      'form.category': this.data.categories[index].tag
+      'form.category': this.data.categories[index].tag,
+      showCategoryPicker: false
     });
   },
 
