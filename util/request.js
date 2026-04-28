@@ -1,5 +1,11 @@
 const app = getApp();
 
+const getImageUrl = (image) => {
+  if (!image) return '/images/default-product.png';
+  if (image.startsWith('http')) return image;
+  return app.globalData.serverUrl + image;
+};
+
 const request = (options) => {
   return new Promise((resolve, reject) => {
     const { url, method = 'GET', data = {}, showLoading = true, timeout = 10000 } = options;
@@ -36,3 +42,4 @@ const request = (options) => {
 };
 
 module.exports = request;
+module.exports.getImageUrl = getImageUrl;
