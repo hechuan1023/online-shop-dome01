@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
+    limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: function(req, file, cb) {
         const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"];
         if (allowed.includes(file.mimetype)) {
@@ -253,6 +253,18 @@ router.post("/cart/del", (req, res) => {
 router.get("/goods/images", (req, res) => {
     var goods_id = url.parse(req.url, true).query.goods_id;
     const sql = "SELECT * FROM goods_images WHERE goods_id = ? ORDER BY sort_order ASC";
+    SQLConnect(sql, [goods_id], (result) => {
+        res.send({ status: 200, data: result || [] });
+    })
+});
+
+/**
+ * 商品图文详情
+ * GET /api/goods/detail-content?goods_id=1
+ */
+router.get("/goods/detail-content", (req, res) => {
+    var goods_id = url.parse(req.url, true).query.goods_id;
+    const sql = "SELECT * FROM goods_detail_content WHERE goods_id = ? ORDER BY sort_order ASC";
     SQLConnect(sql, [goods_id], (result) => {
         res.send({ status: 200, data: result || [] });
     })
@@ -810,18 +822,30 @@ router.get("/favorite/check", (req, res) => {
  *   category: 分类标签，如 phone/computer/earphone/appliance/clothing/food
  */
 router.post("/admin/goods/add", (req, res) => {
-    const { title, price, image, description, stock, category } = req.body;
+    const { title, price, image, description, stock, category, detailImages, detailContent } = req.body;
     if (!title || !price) {
         return res.status(400).send({ status: 400, msg: "商品名称和价格不能为空" });
     }
+    console.log("[添加商品] title:", title, "image长度:", (image || '').length, "detailImages:", (detailImages || []).length, "detailContent:", (detailContent || []).length);
     const sql = "INSERT INTO goods (title, price, image, description, stock) VALUES (?,?,?,?,?)";
     SQLConnect(sql, [title, price || 0, image || '', description || '', stock || 100], (result) => {
         if (result.affectedRows > 0) {
             const goodsId = result.insertId;
-            // 如果指定了分类，自动写入 category 表
             if (category) {
                 const cateSql = "INSERT INTO category (cate, goods_id) VALUES (?,?)";
                 SQLConnect(cateSql, [category, goodsId], () => {});
+            }
+            // 保存多图到 goods_images 表
+            if (detailImages && detailImages.length > 0) {
+                detailImages.forEach((imgUrl, idx) => {
+                    SQLConnect("INSERT INTO goods_images (goods_id, image, sort_order) VALUES (?,?,?)", [goodsId, imgUrl, idx], () => {});
+                });
+            }
+            // 保存图文详情到 goods_detail_content 表
+            if (detailContent && detailContent.length > 0) {
+                detailContent.forEach((item, idx) => {
+                    SQLConnect("INSERT INTO goods_detail_content (goods_id, type, value, sort_order) VALUES (?,?,?,?)", [goodsId, item.type, item.value, idx], () => {});
+                });
             }
             res.send({ status: 200, msg: "添加成功", data: { id: goodsId } });
         } else {
@@ -886,10 +910,11 @@ router.post("/admin/goods/delete", (req, res) => {
  * Body: { id, title, price, image, description, stock }
  */
 router.post("/admin/goods/update", (req, res) => {
-    const { id, title, price, image, description, stock, category } = req.body;
+    const { id, title, price, image, description, stock, category, detailImages, detailContent } = req.body;
     if (!id) {
         return res.status(400).send({ status: 400, msg: "缺少商品ID" });
     }
+    console.log("[修改商品] id:", id, "title:", title, "image长度:", (image || '').length, "detailImages:", (detailImages || []).length, "detailContent:", (detailContent || []).length);
     const sql = "UPDATE goods SET title=?, price=?, image=?, description=?, stock=? WHERE id=?";
     SQLConnect(sql, [title, price, image, description, stock, id], (result) => {
         if (result.affectedRows > 0) {
@@ -900,6 +925,22 @@ router.post("/admin/goods/update", (req, res) => {
                     }
                 });
             }
+            // 更新多图：先删后插
+            SQLConnect("DELETE FROM goods_images WHERE goods_id=?", [id], () => {
+                if (detailImages && detailImages.length > 0) {
+                    detailImages.forEach((imgUrl, idx) => {
+                        SQLConnect("INSERT INTO goods_images (goods_id, image, sort_order) VALUES (?,?,?)", [id, imgUrl, idx], () => {});
+                    });
+                }
+            });
+            // 更新图文详情：先删后插
+            SQLConnect("DELETE FROM goods_detail_content WHERE goods_id=?", [id], () => {
+                if (detailContent && detailContent.length > 0) {
+                    detailContent.forEach((item, idx) => {
+                        SQLConnect("INSERT INTO goods_detail_content (goods_id, type, value, sort_order) VALUES (?,?,?,?)", [id, item.type, item.value, idx], () => {});
+                    });
+                }
+            });
             res.send({ status: 200, msg: "修改成功" });
         } else {
             res.status(500).send({ status: 500, msg: "商品不存在或修改失败" });
