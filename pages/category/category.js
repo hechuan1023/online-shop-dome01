@@ -22,6 +22,17 @@ Page({
     this.loadCategoryProducts('phone');
   },
 
+  onShow: function() {
+    if (app.globalData.selectedCategory) {
+      const tag = app.globalData.selectedCategory;
+      app.globalData.selectedCategory = null;
+      if (tag !== this.data.currentCategory) {
+        this.setData({ currentCategory: tag });
+        this.loadCategoryProducts(tag);
+      }
+    }
+  },
+
   cacheCategoryIcons: function() {
     const categories = this.data.categories;
     categories.forEach((item, index) => {
@@ -52,14 +63,6 @@ Page({
           image: item.image.startsWith('http') ? item.image : app.globalData.serverUrl + item.image
         }));
         this.setData({ products });
-        products.forEach((item, index) => {
-          wx.getImageInfo({
-            src: item.image,
-            success: (imgRes) => {
-              this.setData({ ['products[' + index + '].localImage']: imgRes.path });
-            }
-          });
-        });
       } else {
         this.setData({ products: [] });
       }

@@ -122,12 +122,15 @@ Page({
     });
   },
 
-  goToSearch: function () {
+  goToSearch: function (e) {
+    const keyword = e.currentTarget.dataset.keyword || '';
+    app.globalData.searchKeyword = keyword;
     wx.navigateTo({ url: '/pages/search/search' });
   },
 
   goToCategory: function (e) {
     const tag = e.currentTarget.dataset.tag;
+    app.globalData.selectedCategory = tag;
     wx.switchTab({ url: '/pages/category/category' });
   },
 
