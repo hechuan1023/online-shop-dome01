@@ -1,24 +1,27 @@
 <view class="container">
+  <!-- 支付结果状态 -->
   <view class="result-section" wx:if="{{status === 'success'}}">
-    <text class="result-icon">✅</text>
-    <text class="result-title">支付成功</text>
-    <text class="result-desc" wx:if="{{order}}">实付金额：¥{{order.pay_amount}}</text>
+    <view class="result-icon">✅</view>
+    <view class="result-title">支付成功</view>
+    <view class="result-desc" wx:if="{{order}}">实付金额：¥{{order.pay_amount}}</view>
   </view>
 
   <view class="result-section" wx:elif="{{status === 'unpaid'}}">
-    <text class="result-icon">⏳</text>
-    <text class="result-title">待支付</text>
-    <text class="result-desc" wx:if="{{order}}">需支付：¥{{order.pay_amount}}</text>
+    <view class="result-icon">⏳</view>
+    <view class="result-title">待支付</view>
+    <view class="result-desc" wx:if="{{order}}">需支付：¥{{order.pay_amount}}</view>
     <button class="btn-pay" bindtap="payNow">立即支付</button>
   </view>
 
   <view class="result-section" wx:else>
-    <text class="result-icon">❌</text>
-    <text class="result-title">支付失败</text>
-    <text class="result-desc">请重新尝试支付</text>
+    <view class="result-icon">❌</view>
+    <view class="result-title">支付失败</view>
+    <view class="result-desc">请重新尝试支付</view>
   </view>
 
+  <!-- 订单信息卡片 -->
   <view class="order-info" wx:if="{{order}}">
+    <view class="info-title">订单信息</view>
     <view class="info-row">
       <text class="info-label">订单编号</text>
       <text class="info-value">{{order.order_no}}</text>
@@ -35,6 +38,7 @@
     </block>
   </view>
 
+  <!-- 底部操作按钮 -->
   <view class="action-buttons">
     <button class="btn-order" bindtap="goToOrder">查看订单</button>
     <button class="btn-orders" bindtap="goToOrders">全部订单</button>
