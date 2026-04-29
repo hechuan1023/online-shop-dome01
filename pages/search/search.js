@@ -11,9 +11,20 @@ Page({
     loading: false
   },
 
-  onLoad: function() {
+  onLoad: function(options) {
     this.loadHotKeywords();
     this.loadSearchHistory();
+  },
+
+  onShow: function() {
+    if (app.globalData.searchKeyword) {
+      const keyword = app.globalData.searchKeyword;
+      app.globalData.searchKeyword = null;
+      if (keyword) {
+        this.setData({ keyword: keyword });
+        this.doSearch(keyword);
+      }
+    }
   },
 
   loadHotKeywords: function() {

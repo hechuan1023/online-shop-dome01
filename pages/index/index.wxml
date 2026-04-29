@@ -23,7 +23,7 @@
   <view class="hot-keywords" wx:if="{{hotKeywords.length > 0}}">
     <scroll-view scroll-x class="keyword-scroll">
       <block wx:for="{{hotKeywords}}" wx:key="id">
-        <text class="keyword-tag" bindtap="goToSearch">{{item.keyword}}</text>
+        <text class="keyword-tag" bindtap="goToSearch" data-keyword="{{item.keyword}}">{{item.keyword}}</text>
       </block>
     </scroll-view>
   </view>
