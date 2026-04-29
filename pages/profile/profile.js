@@ -47,29 +47,27 @@ Page({
   },
 
   loadOrderStats: function() {
-    if (!app.globalData.isLoggedIn) return;
-
     request({ url: '/order/list?status=0', showLoading: false }).then(res => {
       if (res.status === 200) {
-        this.setData({ 'stats.unpaidCount': res.data.data ? res.data.data.length : 0 });
+        this.setData({ 'stats.unpaidCount': res.data ? res.data.length : 0 });
       }
     }).catch(() => {});
 
     request({ url: '/order/list?status=1', showLoading: false }).then(res => {
       if (res.status === 200) {
-        this.setData({ 'stats.unshipCount': res.data.data ? res.data.data.length : 0 });
+        this.setData({ 'stats.unshipCount': res.data ? res.data.length : 0 });
       }
     }).catch(() => {});
 
     request({ url: '/order/list?status=2', showLoading: false }).then(res => {
       if (res.status === 200) {
-        this.setData({ 'stats.shippedCount': res.data.data ? res.data.data.length : 0 });
+        this.setData({ 'stats.shippedCount': res.data ? res.data.length : 0 });
       }
     }).catch(() => {});
 
     request({ url: '/order/list', showLoading: false }).then(res => {
       if (res.status === 200) {
-        this.setData({ 'stats.orderCount': res.data.data ? res.data.data.length : 0 });
+        this.setData({ 'stats.orderCount': res.data ? res.data.length : 0 });
       }
     }).catch(() => {});
 
