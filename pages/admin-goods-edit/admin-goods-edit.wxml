@@ -1,11 +1,7 @@
 <view class="edit-container">
   <!-- 顶部标题栏 -->
   <view class="edit-header">
-    <view class="header-back" bindtap="goBack">
-      <text class="back-icon">‹</text>
-    </view>
     <text class="edit-title">{{isEdit ? '编辑商品' : '添加商品'}}</text>
-    <view class="header-placeholder"></view>
   </view>
 
   <scroll-view class="form-scroll" scroll-y>

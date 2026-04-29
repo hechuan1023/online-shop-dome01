@@ -12,32 +12,14 @@
   padding: 20rpx 24rpx;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: 1rpx solid #eee;
-}
-
-.header-back {
-  width: 60rpx;
-  height: 60rpx;
-  display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-.back-icon {
-  font-size: 48rpx;
-  color: #333;
-  font-weight: bold;
+  border-bottom: 1rpx solid #eee;
 }
 
 .edit-title {
   font-size: 34rpx;
   font-weight: bold;
   color: #1a1a1a;
-}
-
-.header-placeholder {
-  width: 60rpx;
 }
 
 /* ========== 表单区域 ========== */
